@@ -1,0 +1,18 @@
+<table>
+        <% if(tableData.hasOwnProperty('keys')) {  %>
+          <% for(var i=0; i < tableData.keys.length; i++) { %>
+            <th>
+              <%= tableData.keys[i] %>
+            </th>
+          <% } %>
+          <% for(var i=0; i < tableData.data.length; i++) { %>
+            <tr>
+              <% for(var j=0; j < tableData.keys.length; j++) { %>
+                <td>
+                  <%= tableData.data[i][tableData.keys[j]] %>
+                </td>
+              <% } %>
+            </tr>
+          <% } %>
+        <% } %>
+</table>
