@@ -1,5 +1,5 @@
 <table>
-        <% if(tableData.hasOwnProperty('keys')) {  %>
+        <% if(tableData!=null && tableData.hasOwnProperty('keys')) {  %>
           <% for(var i=0; i < tableData.keys.length; i++) { %>
             <th>
               <%= tableData.keys[i] %>
@@ -14,5 +14,7 @@
               <% } %>
             </tr>
           <% } %>
+        <% } else { %>
+           <div> Error Showing Data </div>
         <% } %>
 </table>

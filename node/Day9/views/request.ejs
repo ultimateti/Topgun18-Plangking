@@ -11,69 +11,16 @@
   </header>
   <main>
     <div class="jumbotron">
-
-
-      temperatureData
-      <table>
-        <% if(temperatureData5.hasOwnProperty('keys')) {  %>
-          <% for(var i=0; i < temperatureData5.keys.length; i++) { %>
-            <th>
-              <%= temperatureData5.keys[i] %>
-            </th>
-          <% } %>
-          <% for(var i=0; i < temperatureData5.data.length; i++) { %>
-            <tr>
-              <% for(var j=0; j < temperatureData5.keys.length; j++) { %>
-                <td>
-                  <%= temperatureData5.data[i][temperatureData5.keys[j]] %>
-                </td>
-              <% } %>
-            </tr>
-          <% } %>
-        <% } %>
-</table>
-accelerometerData
-<table>
-        <% if(accelerometerData5.hasOwnProperty('keys')) {  %>
-          <% for(var i=0; i < accelerometerData5.keys.length; i++) { %>
-            <th>
-              <%= accelerometerData5.keys[i] %>
-            </th>
-          <% } %>
-          <% for(var i=0; i < accelerometerData5.data.length; i++) { %>
-            <tr>
-              <% for(var j=0; j < accelerometerData5.keys.length; j++) { %>
-                <td>
-                  <%= accelerometerData5.data[i][accelerometerData5.keys[j]] %>
-                </td>
-              <% } %>
-            </tr>
-          <% } %>
-        <% } %>
-</table>
-din1Data
-<table>
-        <% if(din1Data5.hasOwnProperty('keys')) {  %>
-          <% for(var i=0; i < din1Data5.keys.length; i++) { %>
-            <th>
-              <%= din1Data5.keys[i] %>
-            </th>
-          <% } %>
-          <% for(var i=0; i < din1Data5.data.length; i++) { %>
-            <tr>
-              <% for(var j=0; j < din1Data5.keys.length; j++) { %>
-                <td>
-                  <%= din1Data5.data[i][din1Data5.keys[j]] %>
-                </td>
-              <% } %>
-            </tr>
-          <% } %>
-        <% } %>
-</table>
-    </div>
+      <% for(var i=0;i<result.length;i++) {%>
+        <% var tableData = result[i]; %>
+        <%= tableData.sensor %> of Team <%= tableData.teamID %>
+        <% include sensortable.ejs %>
+        <br><br>
+      <% } %>
+      
 
    
-
+    </div>
   </main>
   <footer>
     <% include footer.ejs %>
