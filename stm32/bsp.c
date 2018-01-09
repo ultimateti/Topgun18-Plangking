@@ -78,6 +78,7 @@
 #define MAX_GPS_POS ((int32_t) 8388607  ) // 2^23 - 1
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+SensorAxes_t ACC_VAL;
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions ---------------------------------------------------------*/
 
@@ -86,8 +87,8 @@
 void *HUMIDITY_handle = NULL;
 void *TEMPERATURE_handle = NULL;
 void *PRESSURE_handle = NULL;
-
 void *ACCELERO_handle = NULL;
+
 #endif
 
 void BSP_sensor_Read( sensor_t *sensor_data)
@@ -102,7 +103,7 @@ void BSP_sensor_Read( sensor_t *sensor_data)
   BSP_TEMPERATURE_Get_Temp(TEMPERATURE_handle, &TEMPERATURE_Value);
   BSP_PRESSURE_Get_Press(PRESSURE_handle, &PRESSURE_Value);
 	
-	
+	BSP_ACCELERO_Get_Axes(ACCELERO_handle, &ACC_VAL);
 #endif  
   sensor_data->humidity    = HUMIDITY_Value;
   sensor_data->temperature = TEMPERATURE_Value;
