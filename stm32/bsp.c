@@ -65,6 +65,8 @@
 #include "x_nucleo_iks01a2_temperature.h"
 
 #include "x_nucleo_iks01a2_accelero.h"
+#include "x_nucleo_iks01a2_magneto.h"
+#include "x_nucleo_iks01a2_gyro.h"
 
 #endif
 #endif
@@ -79,6 +81,14 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SensorAxes_t ACC_VAL;
+SensorAxes_t MAG_VAL;
+SensorAxes_t GYRO_VAL;
+
+uint8_t WAKEUP_stat;
+
+float HUMIDITY_Value = 0;
+float TEMPERATURE_Value = 0;
+float PRESSURE_Value = 0;
 /* Private function prototypes -----------------------------------------------*/
 /* Exported functions ---------------------------------------------------------*/
 
@@ -88,15 +98,14 @@ void *HUMIDITY_handle = NULL;
 void *TEMPERATURE_handle = NULL;
 void *PRESSURE_handle = NULL;
 void *ACCELERO_handle = NULL;
+void *MAGNETO_handle = NULL;
+void *GYRO_handle = NULL;
 
 #endif
 
 void BSP_sensor_Read( sensor_t *sensor_data)
 {
   /* USER CODE BEGIN 5 */
-  float HUMIDITY_Value = 0;
-  float TEMPERATURE_Value = 0;
-  float PRESSURE_Value = 0;
 
 #if defined(SENSOR_ENABLED) || defined (LRWAN_NS1)
   BSP_HUMIDITY_Get_Hum(HUMIDITY_handle, &HUMIDITY_Value);
@@ -104,6 +113,12 @@ void BSP_sensor_Read( sensor_t *sensor_data)
   BSP_PRESSURE_Get_Press(PRESSURE_handle, &PRESSURE_Value);
 	
 	BSP_ACCELERO_Get_Axes(ACCELERO_handle, &ACC_VAL);
+	BSP_MAGNETO_Get_Axes(MAGNETO_handle, &MAG_VAL);
+	BSP_GYRO_Get_Axes(GYRO_handle, &GYRO_VAL);
+	
+	BSP_ACCELERO_Get_Wake_Up_Detection_Status_Ext(ACCELERO_handle, &WAKEUP_stat); 
+	//BSP_ACCELERO_Get_Free_Fall_Detection_Status_Ext(ACCELERO_handle, &WAKEUP_stat);
+	
 #endif  
   sensor_data->humidity    = HUMIDITY_Value;
   sensor_data->temperature = TEMPERATURE_Value;
@@ -124,12 +139,19 @@ void  BSP_sensor_Init( void  )
   BSP_TEMPERATURE_Init( HTS221_T_0, &TEMPERATURE_handle );
   BSP_PRESSURE_Init( PRESSURE_SENSORS_AUTO, &PRESSURE_handle );
 	BSP_ACCELERO_Init( ACCELERO_SENSORS_AUTO, &ACCELERO_handle );
+	BSP_MAGNETO_Init( MAGNETO_SENSORS_AUTO, &MAGNETO_handle);
+	BSP_GYRO_Init( GYRO_SENSORS_AUTO, &GYRO_handle);
   
   /* Enable sensors */
   BSP_HUMIDITY_Sensor_Enable( HUMIDITY_handle );
   BSP_TEMPERATURE_Sensor_Enable( TEMPERATURE_handle );
   BSP_PRESSURE_Sensor_Enable( PRESSURE_handle );
 	BSP_ACCELERO_Sensor_Enable( ACCELERO_handle );
+	BSP_MAGNETO_Sensor_Enable( MAGNETO_handle );
+	BSP_GYRO_Sensor_Enable( GYRO_handle );
+	
+	BSP_ACCELERO_Enable_Wake_Up_Detection_Ext(ACCELERO_handle);
+	BSP_ACCELERO_Set_Wake_Up_Threshold_Ext(ACCELERO_handle, (uint8_t)2);
 	
 #endif
     /* USER CODE END 6 */
