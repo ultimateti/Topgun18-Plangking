@@ -64,6 +64,8 @@
 #include "x_nucleo_iks01a2_pressure.h"
 #include "x_nucleo_iks01a2_temperature.h"
 
+#include "x_nucleo_iks01a2_accelero.h"
+
 #endif
 #endif
 
@@ -85,6 +87,7 @@ void *HUMIDITY_handle = NULL;
 void *TEMPERATURE_handle = NULL;
 void *PRESSURE_handle = NULL;
 
+void *ACCELERO_handle = NULL;
 #endif
 
 void BSP_sensor_Read( sensor_t *sensor_data)
@@ -119,12 +122,14 @@ void  BSP_sensor_Init( void  )
   BSP_HUMIDITY_Init( HTS221_H_0, &HUMIDITY_handle );
   BSP_TEMPERATURE_Init( HTS221_T_0, &TEMPERATURE_handle );
   BSP_PRESSURE_Init( PRESSURE_SENSORS_AUTO, &PRESSURE_handle );
+	BSP_ACCELERO_Init( ACCELERO_SENSORS_AUTO, &ACCELERO_handle );
   
   /* Enable sensors */
   BSP_HUMIDITY_Sensor_Enable( HUMIDITY_handle );
   BSP_TEMPERATURE_Sensor_Enable( TEMPERATURE_handle );
   BSP_PRESSURE_Sensor_Enable( PRESSURE_handle );
-
+	BSP_ACCELERO_Sensor_Enable( ACCELERO_handle );
+	
 #endif
     /* USER CODE END 6 */
 }
