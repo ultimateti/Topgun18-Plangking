@@ -4,6 +4,17 @@ var request = require('request');
 var https = require('https');
 var rp = require('request-promise');
 
+var keyMapping = {
+    'pressure':['sensID','val','date'],
+    'temperature':['sensID','val','date'],
+    'humidity':['sensID','val','date'],
+    'gyroscope':['sensID','val_x','val_y','val_z','date'],
+    'accelerometer':['sensID','val_x','val_y','val_z','date'],
+    'magnetometer':['sensID','val_x','val_y','val_z','date'],
+    'leds':['sensID','val','date'],
+    'din':['sensID','val','date']
+};
+
 router.post('/postCoordinate', function(req, res, next) {
     var data = {
         TEAM_ID: req.body.TEAM_ID,
@@ -74,7 +85,7 @@ router.get('/team/:teamID', function(req, res, next) {
         newTable = {
           sensor: isensor,
           teamID: iteamID,
-          keys: ['sensID','val','date'],
+          keys: (keyMapping.hasOwnProperty(isensor))? keyMapping[isensor]:['sensID','val','date'],
           data: resj.data
        };
       } else {
