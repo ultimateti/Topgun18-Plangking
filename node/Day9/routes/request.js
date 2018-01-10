@@ -36,7 +36,6 @@ router.get('/dummy/:teamID', function(req, res, next) {
     }
     console.log(allTable.length);
     res.render('request', {
-        title: 'Team ' + teamID,
         result: allTable
     });
 
@@ -46,70 +45,57 @@ router.get('/dummy/:teamID', function(req, res, next) {
 
 });
 
+
 router.get('/team/:teamID', function(req, res, next) {
   var teamID = req.params.teamID;
-  /*
   var sensors = ['temperature','accelerometer','din1'];
-  var sensor = 'temperature';
-  var tableData = [{},{},{},{},{},{},{},{},{}];
+  var teamIDs = [];
+  if(teamID=='All') 
+    teamIDs = [5,7,9];
+  else
+    teamIDs = [teamID];
 
   var myRequests = [];
-  myRequests.push(rp("http://10.0.0.10/api/temperature/" + teamID + "/1"));
-  myRequests.push(rp("http://10.0.0.10/api/accelerometer/" + teamID + "/1"));
-  myRequests.push(rp("http://10.0.0.10/api/din1/"+teamID+"/1"));
+  for(var i=0;i<teamID.length;i++) {
+    for(var j=0;j<sensors.length;j++) {
+      myRequests.push(rp("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/5"));
+      console.log("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/5");
+    }
+  }
 
-  var result = Promise.all(myRequests).then((results) => {
-  var temparature = results[0]? JSON.parse(results[0]).data: null;
-  var accelerometer = results[1]? JSON.parse(results[1]).data: null;
-  var din1 = results[2]? JSON.parse(results[2]).data: null;
-
-  }).catch(console.log("Error"));
-
-  */
-
-  var result = [
-    {
-        sensor: 'temperature',
-        teamID: 5,
-        keys: ['sensID','val','date'],
-        data: [
-        {
-          "sensID" :1,
-           "val" : 25.6 ,
-           "date" : "2018-01-08T14:53:13.955+01:00" 
-         }]
-     },
-    {
-        sensor: 'accelerometer',
-        teamID: 5,
-        keys: ['sensID','val','date'],
-        data: [
-        {
-          "sensID" :2,
-           "val" : 25.6 ,
-           "date" : "2018-01-08T14:53:13.955+01:00" 
-         }]
-     },
-    {
-        sensor: 'accelerometer',
-        teamID: 5,
-        keys: ['sensID','val','date'],
-        data: [
-        {
-          "sensID" :3,
-           "val" : 25.6 ,
-           "date" : "2018-01-08T14:53:13.955+01:00" 
-         }]
-     }
-  ];
-
-    console.log("Result");
-    console.log(result);
+  var allTable = [];
+  Promise.all(myRequests).then((results) => {
+    for(var i=0;i<results.length;i++) {
+      var resj = JSON.parse(results[i]);
+      var newTable;
+      var isensor = sensors[i%sensors.length];
+      var iteamID = teamIDs[Math.floor(i/teamIDs.length)];
+      if(resj.statusCode=='00') {
+        newTable = {
+          sensor: isensor,
+          teamID: iteamID,
+          keys: ['sensID','val','date'],
+          data: resj.data
+       };
+      } else {
+        newTable = {
+          sensor: isensor,
+          teamID: iteamID,
+          keys: ['statusCode','statusDesc'],
+          data: resj
+       };
+      }
+      
+     allTable.push(newTable);
+    }
+    console.log(allTable.length);
     res.render('request', {
-        title: 'Team ' + teamID,
-        result: result
+        result: allTable
     });
 
+  }).catch(err => console.log("ERR: " +err));
+  
+  
 });
 
 
