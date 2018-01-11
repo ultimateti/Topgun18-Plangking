@@ -47,18 +47,21 @@ humidityController.filter = function(req, res) {
 
 // // Save new employee
 humidityController.save = function(req) {
-  for (var i = 0; i < req.length; i++) {
-    var humidity = new Humidity(req[i]);
-
-    humidity.save(function(err) {
-      if(err) {
-        console.log(err);
-      } else {
-        console.log("Successfully created");
+  Humidity.count(function(err, count) {
+    if (count <= req.length) {
+      for (var i = count; i < req.length; i++) {
+        var humidity = new Humidity(req[i]);
+    
+        humidity.save(function(err) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully created");
+          }
+        });
       }
-    });
-  }
-  
+    }
+  })
 };
 
 
