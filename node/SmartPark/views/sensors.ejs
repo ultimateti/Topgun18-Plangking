@@ -37,7 +37,7 @@
           <div class="panel-heading">
             <div class="row">
               <% if(result[i]!=null && result[i].hasOwnProperty('keys')) {  %>
-                  <p class="panel-title"><%= result[i].sensor %> of Team <%= result[i].teamName %></p>
+                  <p class="panel-title"><%= result[i].sensor %> of Team <%= result[i].teamName %> (<%= result[i].teamID %>)</p>
               <% } else { %>
                    <h3 class="panel-title">Error Showing Data</h3>
                 <% } %>
