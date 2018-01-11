@@ -5,7 +5,7 @@ var temperatureController = {};
 
 // Show list of employees
 temperatureController.list = function(req, res) {
-  Temperature.find({}).limit(200).exec(function (err, temperature) {
+  Temperature.find({}).exec(function (err, temperature) {
     if (err) {
       console.log("Error:", err);
     }
@@ -57,6 +57,17 @@ temperatureController.filter = function(req, res) {
   });
 };
 
+temperatureController.filterRange = function(start_time, end_time, callback) {
+  Temperature.find({date: {$gte: start_time, $lte: end_time}}).exec(function (err, temperature) {
+    if (err) {
+      console.log("Error:", err);
+    }
+    else {
+      callback(temperature)
+    }
+  });
+}
+
 // // Save new employee
 temperatureController.save = function(req, team) {
   var tempObj = {teamID: team}
@@ -69,11 +80,7 @@ temperatureController.save = function(req, team) {
           if(err) {
             console.log(err);
           } else {
-            // console.log("Successfully created");
-            Temperature.update({}, {teamID: team}, {multi: true}, function(err) {
-              if (err)
-              console.log('OK Naka ' + 'temp')
-            })
+            console.log('OK Naka acc')
           }
         });
       }

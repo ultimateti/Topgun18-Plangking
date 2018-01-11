@@ -4,11 +4,7 @@ var request = require('request');
 var https = require('https');
 var rp = require('request-promise');
 var tempctrl = require('../controllers/TemperatureController')
-var pressctrl = require('../controllers/PressureController')
-var humidctrl = require('../controllers/HumidityController')
 var accelctrl = require('../controllers/AccelerometerController')
-var gyroctrl = require('../controllers/GyroscopeController')
-var magnetctrl = require('../controllers/MagnetometerController')
 var din1ctrl = require('../controllers/Din1Controller')
 
 var keyMapping = {
@@ -21,6 +17,33 @@ var keyMapping = {
     'leds':['sensID','val','date'],
     'din':['sensID','val','date']
 };
+
+router.get('/allTeamSensor/:start_time/:end_time', function(req, res, next) {
+  var startHr = req.params.start_time.slice(0, 2)
+  var startMin = req.params.start_time.slice(2, 4)
+  var endHr = req.params.end_time.slice(0, 2)
+  var endMin = req.params.end_time.slice(2, 4)
+
+  var start_dt = '2018-01-11 ' + startHr + ':' + startMin + ':00';
+  var end_dt = '2018-01-11 ' + endHr + ':' + endMin + ':00';
+
+  var result = {}
+
+  accelctrl.filterRange(start_dt, end_dt, function(acc_res) {
+    result['accelerometer'] = acc_res
+    tempctrl.filterRange(start_dt, end_dt, function(tmp_res) {
+      result['temperature'] = tmp_res
+      din1ctrl.filterRange(start_dt, end_dt, function(din_res) {
+        result['din1'] = din_res
+        res.send(result)
+      })
+    })
+  })
+})
+
+router.get('/hello', function(req, res, next) {
+  res.send('hello')
+})
 
 router.post('/postCoordinate', function(req, res, next) {
     var data = {

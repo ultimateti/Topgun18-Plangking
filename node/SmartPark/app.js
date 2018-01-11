@@ -16,6 +16,8 @@ mongoose.connect('mongodb://localhost/sensor')
 var index = require('./routes/index');
 var request = require('./routes/request');
 var sensors = require('./routes/sensors');
+var apis = require('./routes/api')
+var alerts = require('./routes/alert')
 
 var app = express();
 
@@ -36,6 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/request', request);
 app.use('/sensors', sensors);
+app.use('/api', apis);
+app.use('/alert', alerts)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
