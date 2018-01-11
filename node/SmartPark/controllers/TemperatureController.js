@@ -5,20 +5,32 @@ var temperatureController = {};
 
 // Show list of employees
 temperatureController.list = function(req, res) {
-  Temperature.find({}).exec(function (err, temperature) {
+  Temperature.find({}).limit(200).exec(function (err, temperature) {
     if (err) {
       console.log("Error:", err);
     }
     else {
+      var allTable = [];
+      var lastTeam = 0;
+      temperature.sort((a, b) => parseInt(a.teamID) > parseInt(b.teamID));
+      for(var i=0;i<temperature.length;i++) {
+        if(temperature[i].teamID != lastTeam) {
+          console.log(temperature[i].teamID + ' x ' + lastTeam);
+            allTable.push({
+              sensor: 'temperature',
+              teamID: 'แปลงขิง the Origin',
+              keys: ['sensID','val','date'],
+              data: [temperature[i]]
+           });
+        } else {
+            console.log(temperature[i].teamID + ' / ' + lastTeam);
+            allTable[allTable.length-1].data.push(temperature[i]);
+        }
+        lastTeam = temperature[i].teamID;
+      }
+      console.log(allTable.length);
 
-      var newTable = {
-          sensor: 'temperature',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val','date'],
-          data: temperature
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: false});
+      res.render("../views/sensors", {result: allTable, gotten: false});
     }
   });
 };
