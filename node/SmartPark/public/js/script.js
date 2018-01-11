@@ -1,16 +1,18 @@
 var table_data = {};
-var linex_data = {};
-var liney_data = {};
-var linez_data = {};
+var line_chart = {};
+var liney_chart = {};
+var linez_chart = {};
 
 $( document ).ready(function() {
     console.log( "ready!" );
+    console.log(frontResult);
 
     formatResult(frontResult);
-    google.charts.load('current', {packages: ['corechart', 'line','table']});
-	google.charts.setOnLoadCallback(LetsDraw);
+    $('#dataTable').DataTable();
+    LetsDraw();
     
 });
+
 
 function formatResult(frontResult) {
 	for(var i=0;i<frontResult.length;i++) {
@@ -21,7 +23,7 @@ function formatResult(frontResult) {
 	    	if(frontResult[i].data[i].hasOwnProperty('val_z')) frontResult[i].data[j].val_z = parseFloat(frontResult[i].data[j].val_z);
 	    	if(frontResult[i].data[i].hasOwnProperty('date')) frontResult[i].data[j].date = new Date(frontResult[i].data[j].date);
 	    }
-	    frontResult[i].sort((a, b) => a.date - b.date);
+	    if(frontResult[i].data[i].hasOwnProperty('date')) frontResult[i].data.sort((a, b) => a.date - b.date);
     }
 }
 
@@ -33,26 +35,14 @@ $( "#timeForm" ).submit(function(event) {
 	};
 	$.get("../sensor_get", query, function(data) {
   		console.log(data);
-  		formatResult(data.frontResult);
-  		for(var i=0;i<data.frontResult.length;i++) {
-  			createTable(data.frontResult[i]);
-			createLine(data.frontResult[i]);
+  		formatResult(data);
+  		for(var i=0;i<data.result.length;i++) {
+  			updateLine(i,data.result[i]);
   		}
 		
 	});
 });
 
-$("#day-slider").slider({
-      range: true,
-      min: -10,
-      max: 10,
-      values: [-5,5],
-      slide: function( event, ui ) {
-        $("#day-amount-min").val(ui.values[ 0 ]);
-        $("#day-amount-max").val(ui.values[ 1 ]);
-        //createAllAgain();
-      }
-    });
 $("#tres-slider").slider({
       range: true,
       min: 0,
@@ -64,20 +54,14 @@ $("#tres-slider").slider({
         $("#tres-amount-max").val(ui.values[ 1 ]);
         //createAllAgain();
       }
-    });
+});
+
 $("#daytime").val('2018-01-09T08:19');
-$("#day-amount-min").val($("#day-slider").slider("values", 0 ));//.focusout(typeDay);
-$("#day-amount-max").val($("#day-slider").slider("values", 1 ));//.focusout(typeDay);
-$("#tres-amount-min").val($("#tres-slider").slider("values", 0 ));//.focusout(typeTres);
-$("#tres-amount-max").val($("#tres-slider").slider("values", 1 ));//.focusout(typeTres);
-
-
 
 $('.graphBtn').click(function(event) {
 	event.preventDefault();
 	$('.graph').collapse("hide");
 	$(this).next().collapse("toggle");
-
 });
 
 
@@ -88,158 +72,155 @@ function typeAll(e) {
 function typeDay(e) {
 	if($("#day-amount-min").val() <= $("#day-amount-max").val()) {
     	$("#day-slider").slider("option", "values", [$("#day-amount-min").val(),$("#day-amount-max").val()]);
-    	createAllAgain();
+    	//updateLine(id,dispData);
 	}
 }
 function typeTres(e) {
 	if($("#tres-amount-min").val() <= $("#tres-amount-max").val()) {
     	$("#tres-slider").slider("option", "values", [$("#tres-amount-min").val(),$("#tres-amount-max").val()]);
+    	//updateLine(id,dispData);
 	}
 }
 
 function LetsDraw() {
 	for(var i=0;i<frontResult.length;i++) {
-  		createTable(i,frontResult[i]);
   		createLine(i,frontResult[i]);
   	}
   	$('.graph:not(:first)').collapse("hide");
 }
-function createTable(id,dispData) {
-
-	var data = new google.visualization.DataTable();
-	var dateFormatter = new google.visualization.DateFormat({pattern: 'dd/MM/yyyy HH:mm'});
-
-	/*
-		var dispData = {
-			        sensor: 'posts',
-			        teamID: 25,
-			        keys: ['userId','id','title'],
-			        data: JSON.parse(results[i])
-			     };
-	*/
-	for(var i=0;i<dispData.keys.length;i++) {
-		var type = '';
-		if(dispData.keys[i].startsWith('val'))
-			type = 'number';
-		else if(dispData.keys[i]=='date')
-			type = 'datetime';
-		else 
-			type = 'string';
-		data.addColumn(type,dispData.keys[i]);
-	}
-    
-    //var today = new Date();
-    //sensors = sensors.filter(a => a.value >= $("#tres-slider").slider("values", 0 ) && a.value <= $("#tres-slider").slider("values", 1 ));
-    //sensors = sensors.filter(a => dayDiff(a.datetime,today) >= $("#day-slider").slider("values", 0 ) && dayDiff(a.datetime,today) <= $("#day-slider").slider("values", 1 ));
-    console.log(dispData.data);
-    for (var i=0;i<dispData.data.length;i++) {
-    	
-    	var rowData = [];
-    	 for(var j=0;j<dispData.keys.length;j++) {
-    	 	rowData.push(dispData.data[i][dispData.keys[j]]);
-    	 }
-    	data.addRow(rowData);
-    }
-
-	table_data[id] = data;
-	dateFormatter.format(table_data[id], 0);
-
-	drawTable(id);
-}
-function drawTable(id) {
-	var cssClassNames = {
-        'headerRow': 'cssHeaderRow',
-        'tableRow': 'cssTableRow',
-        'oddTableRow': 'cssOddTableRow',
-        'selectedTableRow': 'cssSelectedTableRow',
-        'hoverTableRow': 'cssHoverTableRow',
-        'headerCell': 'cssHeaderCell',
-        'tableCell': 'cssTableCell',
-        'rowNumberCell': 'cssRowNumberCell'
-    };
-
-	var options =  {
-		showRowNumber: true, 
-		allowHtml: true,
-		cssClassNames: cssClassNames,
-		width: '100%', 
-		height: '200px'
-	};
-	var table = new google.visualization.Table(document.getElementById('table'+id));
-	table.draw(table_data[id],options);
-}
 
 function createLine(id,dispData) {
-	//var today = new Date();
-    //sensors = sensors.filter(a => a.value >= $("#tres-slider").slider("values", 0 ) && a.value <= $("#tres-slider").slider("values", 1 ));
-    //sensors = sensors.filter(a => dayDiff(a.datetime,today) >= $("#day-slider").slider("values", 0 ) && dayDiff(a.datetime,today) <= $("#day-slider").slider("values", 1 ));
-	var dateFormatter = new google.visualization.DateFormat({pattern: 'dd/MM/yyyy HH:mm'});	
-
-    if(dispData.keys.indexOf('val')>-1) {
-    	linex_data[id] = new google.visualization.DataTable();
-		linex_data[id].addColumn('datetime', 'Time');
-		linex_data[id].addColumn('number', dispData.sensor);
-		for (var i=0;i<dispData.data.length;i++) 
-			linex_data[id].addRow([new Date(dispData.data[i].date), parseFloat(dispData.data[i].val)]);
-	}
-	else {
-		linex_data[id] = new google.visualization.DataTable();
-		linex_data[id].addColumn('datetime', 'Time');
-		linex_data[id].addColumn('number', dispData.sensor + ' (x)');
-		for (var i=0;i<dispData.data.length;i++) 
-			linex_data[id].addRow([new Date(dispData.data[i].date), parseFloat(dispData.data[i].val_x)]);
-
-		liney_data[id] = new google.visualization.DataTable();
-		liney_data[id].addColumn('datetime', 'Time');
-		liney_data[id].addColumn('number', dispData.sensor + ' (y)');
-		for (var i=0;i<dispData.data.length;i++) 
-			liney_data[id].addRow([new Date(dispData.data[i].date), parseFloat(dispData.data[i].val_y)]);
-
-		linez_data[id] = new google.visualization.DataTable();
-		linez_data[id].addColumn('datetime', 'Time');
-		linez_data[id].addColumn('number', dispData.sensor + ' (z)');
-		for (var i=0;i<dispData.data.length;i++) 
-			linez_data[id].addRow([new Date(dispData.data[i].date), parseFloat(dispData.data[i].val_z)]);
-	}
-
-	
-	
-	drawLine(id);
-	
-}
-function drawLine(id) {
-	var options = {
-		width: '100%', 
-		height: '100%',
-		hAxis: {
-		  title: 'Time',
-		  format: 'dd/MM/yyyy HH:mm' 
-		},
-		vAxis: {
-		  title: 'Value'
-		},
-		explorer: {
-			axis: 'horizontal',
-			maxZoomIn:16
-		},
-		colors: [
-			'#FF00FF'
-		]
+	var data = [];
+	var config = {
+	    type: 'bar',
+		data: {
+				datasets: []
+			},
+		    options: {
+				scales: {
+					xAxes: [{
+						type: 'time'
+					}],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
 	};
 
-	if(linex_data[id]) {
-		var chart = new google.visualization.LineChart(document.getElementById('linex'+id));   
-	chart.draw(linex_data[id], options);
+	if(dispData.keys.indexOf('val')>-1) {
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val)});
+		}
+		
+		config.data.datasets.push({
+			label: dispData.sensor,
+			backgroundColor: '#FF0000',
+			data: data,
+			type: 'line',
+			pointRadius: 3,
+			fill: false,
+			lineTension: 0,
+			borderWidth: 3,
+			borderDash: [3,3]
+		});
+
 	}
+	else {
+		data = [];
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_x)});
+		}
+		config.data.datasets.push({
+			label: dispData.sensor + '(x)',
+			backgroundColor: '#FF0000',
+			data: data,
+			type: 'line',
+			pointRadius: 3,
+			fill: false,
+			lineTension: 0,
+			borderWidth: 3,
+			borderDash: [3,3]
+		});
+
+		data = [];
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_y)});
+		}
+		
+		config.data.datasets.push({
+			label: dispData.sensor + '(y)',
+			backgroundColor: '#FFFF00',
+			data: data,
+			type: 'line',
+			pointRadius: 3,
+			fill: false,
+			lineTension: 0,
+			borderWidth: 3,
+			borderDash: [3,3]
+		});
+
+		data = [];
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_z)});
+		}
+		config.data.datasets.push({
+			label: dispData.sensor + '(z)',
+			backgroundColor: '#00FF00',
+			data: data,
+			type: 'line',
+			pointRadius: 3,
+			fill: false,
+			lineTension: 0,
+			borderWidth: 3,
+			borderDash: [3,3]
+		});
+
+
+		
+	}
+
+	line_chart[id] = new Chart($('#line'+id),config);
 	
-	if(liney_data[id]) {
-		var chart = new google.visualization.LineChart(document.getElementById('liney'+id));   
-		chart.draw(liney_data[id], options);
+}
+
+function updateLine(id,dispData) {
+	var data = [];
+
+	if(dispData.keys.indexOf('val')>-1) {
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val)});
+		}
+		line_chart[id].config.data.datasets[0].data = data;
+
 	}
-	if(linez_data[id]) {
-		var chart = new google.visualization.LineChart(document.getElementById('linez'+id));   
-		chart.draw(linez_data[id], options);
+	else {
+		data = [];
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_x)});
+		}
+		line_chart[id].config.data.datasets[0].data = data;
+
+		data = [];
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_y)});
+		}
+		line_chart[id].config.data.datasets[1].data = data;
+
+		data = [];
+		for (var i=0;i<dispData.data.length;i++) {
+			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_z)});
+		}
+		line_chart[id].config.data.datasets[2].data = data;
+
+
+		
 	}
+
+	line_chart[id].update();
       
 }
 
@@ -256,10 +237,6 @@ window.onresize = function(event) {
 
 function resizeDiv() {
 	
-	$('.graph').addClass("in");
-	for(var i=0;i<frontResult.length;i++) {	
-  		drawLine(i);
-  	}
-  	$('.graph:not(:first)').removeClass("in");
+	
 	//$('#chart_row').css({'height': $(document).innerHeight()/2 + 'px'});
 }

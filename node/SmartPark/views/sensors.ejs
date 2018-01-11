@@ -14,40 +14,21 @@
     
     
     <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <div >
-                <form id='timeForm' action = "" method = "GET">
-                    <input type="hidden" name="sensor" value=<%= result[0].sensor %>>
-                    Date and Time : 
-                      <input type="datetime-local" id="daytime">
-                      
-                      <input type = "submit" value = "Submit" id="daytime_submit">
-                </form>
-              </div>
-            </div> 
-            
-          <div class="col-md-6">
-            <div class="fullwidth" id="sliders">
-              <div class="row">
-                <div class="col-md-2">Day Range</div> 
-                <input type="number" id="day-amount-min" class="col-md-5"><input type="number" id="day-amount-max" class="col-md-5"> 
-              </div>
-              <div class="row" id="day-slider"></div> 
-              <div class="row">
-                <div class="col-md-2">Max-Min</div>
-                <input type="number" id="tres-amount-min" class="col-md-5"><input type="number" id="tres-amount-max" class="col-md-5"> 
-              </div> 
-              <div class="row fullwidth" id="tres-slider"></div> 
-              <button class="btn btn-primary fullwidth" type="button" id="slidersetBtn">Set</button>
-            </div>
-          </div>   
-
+      <div class="row">
+        <div class="col-md-12">
+          <div >
+            <form id='timeForm' action = "" method = "GET">
+                <input type="hidden" name="sensor" value=<%= result[0].sensor %>>
+                Date and Time : 
+                  <input type="datetime-local" id="daytime">
+                  
+                  <input type = "submit" value = "Submit" id="daytime_submit">
+            </form>
           </div>
-        </div>
-
-    <div class="jumbotron">
-
+        </div> 
+      </div>
+    </div>
+          
       
 
       
@@ -65,15 +46,16 @@
             </div>
             <button type="button" class="btn btn-info fullwidth graphBtn" >Open Graph</button>
             <div class="row graph collapse in">
-              <div id="linex<%= i %>"></div>
-              <div id="liney<%= i %>"></div>
-              <div id="linez<%= i %>"></div>
+              <canvas id="line<%= i %>" class="line"></canvas>
             </div>
           </div>
 
           <div class="panel-body">
-            <div id="table<%= i %>"></div>
-            </div>
+            <% for(var i=0;i<result.length;i++) {%>
+              <% var tableData = result[i]; %>
+              <% include sensortable.ejs %>
+              <br><br>
+            <% } %>
           </div>
         <br><br>
       <% } %>
@@ -84,7 +66,8 @@
     <% include footer.ejs %>
   </footer>
   <script>var frontResult = <%- JSON.stringify(result) %>; </script>
-  <script src="/js/Chart.bundle.min.js"></script>
+  <script src="/js/moment.js"></script>
+  <script src="/js/Chart.min.js"></script>
   <script src="/js/script.js"></script>
 </body>
 

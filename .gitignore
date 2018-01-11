@@ -63,3 +63,4 @@ typings/
 # vscode settings
 .vscode/
 node/SmartPark/sftp-config.json
+node/SmartPark/sftp-config.json
