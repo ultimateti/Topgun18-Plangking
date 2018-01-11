@@ -10,12 +10,13 @@ var router = express.Router();
    'leds':['sensID','val','date'],
    'din':['sensID','val','date']
 */
-var pressure ;//= require("../controllers/PressureController.js");
+
+var pressure = require("../controllers/PressureController.js");
 var temperature = require("../controllers/TemperatureController.js");
-var humidity ;//= require("../controllers/HumidityController.js");
-var gyroscope ;//= require("../controllers/GyroscopeController.js");
-var accelerometer ;//= require("../controllers/AccelerometerController.js");
-var magnetometer ;//= require("../controllers/MagnetometerController.js");
+var humidity = require("../controllers/HumidityController.js");
+var gyroscope = require("../controllers/GyroscopeController.js");
+var accelerometer = require("../controllers/AccelerometerController.js");
+var magnetometer = require("../controllers/MagnetometerController.js");
 
 var rp = require('request-promise');
 
@@ -25,10 +26,7 @@ router.post('/save', function(req, res) {
 
 router.get('/sensor_get', function (req, res) {
 	var sensor = req.query.sensor;
-	console.log('hi');
 	console.log(req.query);
-	var d = new Date(req.query.daytime);
-	console.log(d);
 	switch(sensor) {
 	    case 'pressure':
 	        pressure.filter(req.query, res);
@@ -98,7 +96,6 @@ router.get('/list/:sensor', function(req, res) {
 			    }
 			    console.log(allTable.length);
 			    res.render("../views/sensors", {result: [newTable],sensorName: sensor});
-
 			  }).catch(err => console.log("ERR: " +err));
 	        break;
 	    default:
@@ -107,5 +104,7 @@ router.get('/list/:sensor', function(req, res) {
 	}
 
 });
+
+
 
 module.exports = router;

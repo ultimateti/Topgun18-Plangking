@@ -3,6 +3,12 @@ var router = express.Router();
 var request = require('request');
 var https = require('https');
 var rp = require('request-promise');
+var tempctrl = require('../controllers/TemperatureController')
+var pressctrl = require('../controllers/PressureController')
+var humidctrl = require('../controllers/HumidityController')
+var accelctrl = require('../controllers/AccelerometerController')
+var gyroctrl = require('../controllers/GyroscopeController')
+var magnetctrl = require('../controllers/MagnetometerController')
 
 var keyMapping = {
     'pressure':['sensID','val','date'],
@@ -56,10 +62,10 @@ router.get('/dummy/:teamID', function(req, res, next) {
 
 });
 
-
-router.get('/team/:teamID', function(req, res, next) {
+router.get('/team/:teamID/:save', function(req, res, next) {
   var teamID = req.params.teamID;
-  var sensors = ['temperature','accelerometer','din1'];
+  var isSave = req.params.save;
+  var sensors = ['temperature', 'accelerometer', 'pressure', 'humidity', 'gyroscope', 'magnetometer']
   var teamIDs = [];
   if(teamID=='All') 
     teamIDs = [5,7,9];
@@ -67,16 +73,16 @@ router.get('/team/:teamID', function(req, res, next) {
     teamIDs = [teamID];
 
   var myRequests = [];
-  for(var i=0;i<teamID.length;i++) {
-    for(var j=0;j<sensors.length;j++) {
-      myRequests.push(rp("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/5"));
-      console.log("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/5");
+  for(var i = 0; i < teamID.length; i++) {
+    for(var j = 0; j < sensors.length; j++) {
+      myRequests.push(rp("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/All"));
+      console.log("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/All");
     }
   }
 
   var allTable = [];
   Promise.all(myRequests).then((results) => {
-    for(var i=0;i<results.length;i++) {
+    for(var i = 0; i < results.length; i++) {
       var resj = JSON.parse(results[i]);
       var newTable;
       var isensor = sensors[i%sensors.length];
@@ -87,7 +93,19 @@ router.get('/team/:teamID', function(req, res, next) {
           teamID: iteamID,
           keys: (keyMapping.hasOwnProperty(isensor))? keyMapping[isensor]:['sensID','val','date'],
           data: resj.data
-       };
+        };
+        
+        if (isSave == 'true') {
+          switch(sensors[i]){
+            case 'temperature': tempctrl.save(data.data); break;
+            case 'accelerometer': accelctrl.save(data.data); break;
+            case 'pressure': pressctrl.save(data.data); break;
+            case 'humidity': humidctrl.save(data.data); break;
+            case 'gyroscope': gyroctrl.save(data.data); break;
+            case 'magnetometer': magnetctrl.save(data.data); break;
+          }
+        }
+        
       } else {
         newTable = {
           sensor: isensor,
@@ -106,9 +124,6 @@ router.get('/team/:teamID', function(req, res, next) {
 
   }).catch(err => console.log("ERR: " +err));
   
-  
 });
-
-
 
 module.exports = router;
