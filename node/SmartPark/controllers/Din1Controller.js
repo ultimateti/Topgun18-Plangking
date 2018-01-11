@@ -24,7 +24,7 @@ din1Controller.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-        res.render("../views/sensors", {result: splitTeam(din1)});
+        res.json({result: splitTeam(din1)});
     }
   });
 };
@@ -76,7 +76,7 @@ function splitTeam(teamArray) {
   for(var i=0;i<teamArray.length;i++) {
     if(teamArray[i].teamID != lastTeam) {
         allTable.push({
-          sensor: teamArray[i].sensor,
+          sensor: 'din1',
           teamID: teamName[teamArray[i].teamID],
           keys: ['sensID','val','date'],
           data: [teamArray[i]]

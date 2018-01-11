@@ -29,7 +29,7 @@ accelerometerController.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-      res.render("../views/sensors", {result: splitTeam(accelerometer)});
+      res.json({result: splitTeam(accelerometer)});
     }
   });
 };
@@ -82,7 +82,7 @@ function splitTeam(teamArray) {
     if(teamArray[i].teamID != lastTeam) {
       
         allTable.push({
-          sensor: teamArray[i].sensor,
+          sensor: 'accelerometer',
           teamID: teamName[teamArray[i].teamID],
           keys: ['sensID','val_x','val_y','val_z','date'],
           data: [teamArray[i]]

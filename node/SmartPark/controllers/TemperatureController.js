@@ -25,7 +25,7 @@ temperatureController.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-      res.render("../views/sensors", {result: splitTeam(temperature)});
+      res.json({result: splitTeam(temperature)});
     }
   });
 };
@@ -79,7 +79,7 @@ function splitTeam(teamArray) {
     if(teamArray[i].teamID != lastTeam) {
       
         allTable.push({
-          sensor: teamArray[i].sensor,
+          sensor: 'temperature',
           teamID: teamName[teamArray[i].teamID],
           keys: ['sensID','val','date'],
           data: [teamArray[i]]
