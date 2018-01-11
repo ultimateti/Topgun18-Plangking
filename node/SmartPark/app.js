@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise;
 
 console.log('start');
 
-mongoose.connect('mongodb://128.168.43.189/sensor')
+mongoose.connect('mongodb://128.199.158.8/sensor')
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error('mongo err'+err));
 
