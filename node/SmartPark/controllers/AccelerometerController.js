@@ -15,8 +15,6 @@ accelerometerController.list = function(req, res) {
   });
 };
 
-
-
 accelerometerController.filter = function(req, res) {
   var times = req.daytime;
   var valtime = (new Date(times)).valueOf()

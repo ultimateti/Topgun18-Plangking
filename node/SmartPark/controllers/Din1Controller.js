@@ -3,7 +3,6 @@ var Din1 = require("../models/Din1");
 var teamName = require('./TeamName');
 var din1Controller = {};
 
-// Show list of employees
 din1Controller.list = function(req, res) {
   Din1.find({}).exec(function (err, din1) {
     if (err) {

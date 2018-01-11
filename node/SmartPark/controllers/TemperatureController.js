@@ -3,7 +3,6 @@ var Temperature = require("../models/Temperature");
 var teamName = require('./TeamName');
 var temperatureController = {};
 
-// Show list of employees
 temperatureController.list = function(req, res) {
   Temperature.find({}).exec(function (err, temperature) {
     if (err) {
