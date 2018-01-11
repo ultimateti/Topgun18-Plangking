@@ -9,7 +9,7 @@ din1Controller.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-      res.render("../views/sensors", {result: splitTeam(din1)});
+      res.render("../views/sensors", {result: splitTeam(din1),title: 'Din1'});
     }
   });
 };
@@ -76,7 +76,8 @@ function splitTeam(teamArray) {
     if(teamArray[i].teamID != lastTeam) {
         allTable.push({
           sensor: 'din1',
-          teamID: teamName[teamArray[i].teamID],
+          teamName: teamName[teamArray[i].teamID],
+          teamID: teamArray[i].teamID,
           keys: ['sensID','val','date'],
           data: [teamArray[i]]
        });

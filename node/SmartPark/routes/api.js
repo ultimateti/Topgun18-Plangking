@@ -52,7 +52,7 @@ router.post('/postCoordinate', function(req, res, next) {
         LONG: req.body.LONG
     }
     console.log(data);
-    res.render('showpost', {data: data})
+    res.render('showpost', {data: data,title: 'Din1'})
 });
 
 router.get('/dummy/:teamID', function(req, res, next) {
@@ -77,7 +77,7 @@ router.get('/dummy/:teamID', function(req, res, next) {
     }
     console.log(allTable.length);
     res.render('request', {
-        result: allTable
+        result: allTable,title: 'Din1'
     });
 
   }).catch(err => console.log("ERR: " +err));

@@ -10,7 +10,7 @@ alertController.list = function(req, res) {
     }
     else {
       console.log(alert.length)
-      res.render('alert', {result: alert})
+      res.render('alert', {result: alert,title: 'Alert'})
     }
   });
 };

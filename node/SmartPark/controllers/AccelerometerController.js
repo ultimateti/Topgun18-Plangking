@@ -10,7 +10,7 @@ accelerometerController.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-      res.render("../views/sensors", {result: splitTeam(accelerometer)});
+      res.render("../views/sensors", {result: splitTeam(accelerometer),title: 'Accelerometer'});
     }
   });
 };
@@ -81,7 +81,8 @@ function splitTeam(teamArray) {
       
         allTable.push({
           sensor: 'accelerometer',
-          teamID: teamName[teamArray[i].teamID],
+          teamName: teamName[teamArray[i].teamID],
+          teamID: teamArray[i].teamID,
           keys: ['sensID','val_x','val_y','val_z','date'],
           data: [teamArray[i]]
        });

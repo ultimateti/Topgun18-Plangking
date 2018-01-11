@@ -9,20 +9,20 @@ $( document ).ready(function() {
 
     formatResult(frontResult);
     LetsDraw();
-    
+    $("body").fadeIn(1000);
 });
 
 
-function formatResult(frontResult) {
-	for(var i=0;i<frontResult.length;i++) {
-		for(var j=0;j<frontResult[i].data.length;j++) {
-	    	if(frontResult[i].data[j].hasOwnProperty('val')) frontResult[i].data[j].val = parseFloat(frontResult[i].data[j].val);
-	    	if(frontResult[i].data[j].hasOwnProperty('val_x')) frontResult[i].data[j].val_x = parseFloat(frontResult[i].data[j].val_x);
-	    	if(frontResult[i].data[j].hasOwnProperty('val_y')) frontResult[i].data[j].val_y = parseFloat(frontResult[i].data[j].val_y);
-	    	if(frontResult[i].data[j].hasOwnProperty('val_z')) frontResult[i].data[j].val_z = parseFloat(frontResult[i].data[j].val_z);
-	    	if(frontResult[i].data[j].hasOwnProperty('date')) frontResult[i].data[j].date = new Date(frontResult[i].data[j].date);
+function formatResult(result) {
+	for(var i=0;i<result.length;i++) {
+		for(var j=0;j<result[i].data.length;j++) {
+	    	if(result[i].data[j].hasOwnProperty('val')) result[i].data[j].val = parseFloat(result[i].data[j].val);
+	    	if(result[i].data[j].hasOwnProperty('val_x')) result[i].data[j].val_x = parseFloat(result[i].data[j].val_x);
+	    	if(result[i].data[j].hasOwnProperty('val_y')) result[i].data[j].val_y = parseFloat(result[i].data[j].val_y);
+	    	if(result[i].data[j].hasOwnProperty('val_z')) result[i].data[j].val_z = parseFloat(result[i].data[j].val_z);
+	    	if(result[i].data[j].hasOwnProperty('date')) result[i].data[j].date = new Date(result[i].data[j].date);
 	    }
-	    if(frontResult[i].data[0].hasOwnProperty('date')) frontResult[i].data.sort((a, b) => a.date - b.date);
+	    if(result[i].data[0].hasOwnProperty('date')) result[i].data.sort((a, b) => a.date - b.date);
 	    $('#dataTable'+i).DataTable();
     }
 }
@@ -31,32 +31,22 @@ $( "#timeForm" ).submit(function(event) {
 	event.preventDefault();
 	var query = {
 		'sensor':frontResult[0].sensor,
-		'daytime': $("#daytime").val()
+		'starttime': $("#starttime").val(),
+		'stoptime': $("#stoptime").val()
 	};
+	
 	$.get("../sensor_get", query, function(data) {
-  		console.log(data);
-  		formatResult(data);
+  		formatResult(data.result);
+  		console.log(data.result);
   		for(var i=0;i<data.result.length;i++) {
-  			updateLine(i,data.result[i]);
+  			updateLine(data.result[i].teamID,data.result[i]);
   		}
 		
 	});
 });
 
-$("#tres-slider").slider({
-      range: true,
-      min: 0,
-      max: 255,
-      step: 0.01,
-      values: [ 0, 2 ],
-      slide: function( event, ui ) {
-        $("#tres-amount-min").val(ui.values[ 0 ]);
-        $("#tres-amount-max").val(ui.values[ 1 ]);
-        //createAllAgain();
-      }
-});
-
-$("#daytime").val('2018-01-09T08:19');
+//$("#starttime").val('2018-01-11T20:05');
+//$("#stoptime").val('2018-01-11T20:38');
 
 $('.graphBtn').click(function(event) {
 	event.preventDefault();
@@ -65,26 +55,9 @@ $('.graphBtn').click(function(event) {
 });
 
 
-$("#slidersetBtn").click(typeAll);
-function typeAll(e) {
-	typeDay(e); typeTres(e);
-}
-function typeDay(e) {
-	if($("#day-amount-min").val() <= $("#day-amount-max").val()) {
-    	$("#day-slider").slider("option", "values", [$("#day-amount-min").val(),$("#day-amount-max").val()]);
-    	//updateLine(id,dispData);
-	}
-}
-function typeTres(e) {
-	if($("#tres-amount-min").val() <= $("#tres-amount-max").val()) {
-    	$("#tres-slider").slider("option", "values", [$("#tres-amount-min").val(),$("#tres-amount-max").val()]);
-    	//updateLine(id,dispData);
-	}
-}
-
 function LetsDraw() {
 	for(var i=0;i<frontResult.length;i++) {
-  		createLine(i,frontResult[i]);
+  		createLine(frontResult[i].teamID,frontResult[i]);
   	}
   	$('.graph:not(:first)').collapse("hide");
 }
@@ -117,7 +90,7 @@ function createLine(id,dispData) {
 		}
 		
 		config.data.datasets.push({
-			label: dispData.data[0].sensor,
+			label: 'value',
 			backgroundColor: '#FF0000',
 			data: data,
 			type: 'line',
@@ -182,7 +155,6 @@ function createLine(id,dispData) {
 
 		
 	}
-
 	line_chart[id] = new Chart($('#line'+id),config);
 	
 }

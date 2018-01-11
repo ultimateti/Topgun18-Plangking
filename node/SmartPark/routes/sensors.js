@@ -16,13 +16,13 @@ router.get('/sensor_get', function (req, res) {
 	console.log(req.query);
 	switch(sensor) {
 	    case 'temperature':
-			temparature.filterRange(start_time, end_time, function(temparature) {
-				res.json({result: splitTeam(temparature)})
+			temperature.filterRange(start_time, end_time, function(temperature) {
+				res.json({result: splitTeam(temperature)})
 			});
 	        break;
 	    case 'accelerometer':
 	        accelerometer.filterRange(start_time, end_time, function(accelerometer) {
-				res.json({result: splitTeam(accelerometer)})
+				res.json({result: splitTeamXYZ(accelerometer)})
 			});
 	        break;
 	    case 'din1':
@@ -57,8 +57,29 @@ router.get('/list/:sensor', function(req, res) {
 	}
 
 });
-
 function splitTeam(teamArray) {
+  var allTable = [];
+  var lastTeam = 0;
+  teamArray.sort((a, b) => a.teamID - b.teamID);
+  for(var i=0;i<teamArray.length;i++) {
+    if(teamArray[i].teamID != lastTeam) {
+      
+        allTable.push({
+          sensor: 'temperature',
+          teamName: teamName[teamArray[i].teamID],
+          teamID: teamArray[i].teamID,
+          keys: ['sensID','val','date'],
+          data: [teamArray[i]]
+       });
+    } else {
+        allTable[allTable.length-1].data.push(teamArray[i]);
+    }
+    lastTeam = teamArray[i].teamID;
+  }
+  return allTable;
+}
+
+function splitTeamXYZ(teamArray) {
 	var allTable = [];
 	var lastTeam = 0;
 	teamArray.sort((a, b) => a.teamID - b.teamID);
@@ -67,7 +88,8 @@ function splitTeam(teamArray) {
 		
 		  allTable.push({
 			sensor: 'accelerometer',
-			teamID: teamName[teamArray[i].teamID],
+			teamName: teamName[teamArray[i].teamID],
+			teamID: teamArray[i].teamID,
 			keys: ['sensID','val_x','val_y','val_z','date'],
 			data: [teamArray[i]]
 		 });
@@ -78,5 +100,6 @@ function splitTeam(teamArray) {
 	}
 	return allTable;
   }
+
 
 module.exports = router;

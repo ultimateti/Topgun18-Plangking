@@ -10,7 +10,7 @@ temperatureController.list = function(req, res) {
     }
     else {
       console.log(temperature.length);
-      res.render("../views/sensors", {result: splitTeam(temperature)});
+      res.render("../views/sensors", {result: splitTeam(temperature),title: 'Temperature'});
     }
   });
 };
@@ -79,7 +79,8 @@ function splitTeam(teamArray) {
       
         allTable.push({
           sensor: 'temperature',
-          teamID: teamName[teamArray[i].teamID],
+          teamName: teamName[teamArray[i].teamID],
+          teamID: teamArray[i].teamID,
           keys: ['sensID','val','date'],
           data: [teamArray[i]]
        });
