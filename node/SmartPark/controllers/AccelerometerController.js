@@ -48,18 +48,18 @@ accelerometerController.filter = function(req, res) {
   });
 };
 
-// // Save new employee
-accelerometerController.save = function(req) {
-  Accelerometer.count(function(err, count) {
+accelerometerController.save = function(req, team) {
+  var tempObj = {teamID: team}
+  Accelerometer.count({teamID: team}, function(err, count) {
+    console.log('WUT acc ' + team + ' count ' + count)
     if (count <= req.length) {
       for (var i = count; i < req.length; i++) {
-        var accelerometer = new Accelerometer(req[i]);
-    
+        var accelerometer = new Accelerometer(extend(tempObj, req[i]));
         accelerometer.save(function(err) {
           if(err) {
             console.log(err);
           } else {
-            console.log("Successfully created");
+            console.log('OK Naka acc')
           }
         });
       }
@@ -67,5 +67,14 @@ accelerometerController.save = function(req) {
   })
 };
 
+function extend(target) {
+  var sources = [].slice.call(arguments, 1);
+  sources.forEach(function (source) {
+      for (var prop in source) {
+          target[prop] = source[prop];
+      }
+  });
+  return target;
+}
 
 module.exports = accelerometerController;

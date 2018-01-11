@@ -1,21 +1,21 @@
 var mongoose = require("mongoose");
-var Temperature = require("../models/Temperature");
+var Din1 = require("../models/Din1");
 
-var temperatureController = {};
+var din1Controller = {};
 
 // Show list of employees
-temperatureController.list = function(req, res) {
-  Temperature.find({}).exec(function (err, temperature) {
+din1Controller.list = function(req, res) {
+  Din1.find({}).exec(function (err, din1) {
     if (err) {
       console.log("Error:", err);
     }
     else {
 
       var newTable = {
-          sensor: 'temperature',
+          sensor: 'din1',
           teamID: 'แปลงขิง the Origin',
           keys: ['sensID','val','date'],
-          data: temperature
+          data: din1
        };
 
       res.render("../views/sensors", {result: [newTable], gotten: false});
@@ -23,21 +23,21 @@ temperatureController.list = function(req, res) {
   });
 };
 
-temperatureController.filter = function(req, res) {
+din1Controller.filter = function(req, res) {
   var times = req.daytime;
   var valtime = new Date(times).valueOf()
   var startTime = new Date(valtime - 30 * 60000)
-  Temperature.find({date: {$gte: startTime, $lte: times}}).exec(function (err, temperature) {
+  Din1.find({date: {$gte: startTime, $lte: times}}).exec(function (err, din1) {
     if (err) {
       console.log("Error:", err);
     }
     else {
 
       var newTable = {
-          sensor: 'temperature',
+          sensor: 'din1',
           teamID: 'แปลงขิง the Origin',
           keys: ['sensID','val','date'],
-          data: temperature
+          data: din1
        };
 
       res.render("../views/sensors", {result: [newTable], gotten: true});
@@ -45,23 +45,18 @@ temperatureController.filter = function(req, res) {
   });
 };
 
-// // Save new employee
-temperatureController.save = function(req, team) {
+din1Controller.save = function(req, team) {
   var tempObj = {teamID: team}
-  Temperature.count({teamID: team}, function(err, count) {
-    console.log('WUT temp ' + team + ' count ' + count)    
+  Din1.count({teamID: team}, function(err, count) {
+    console.log('WUT din ' + team + ' count ' + count)
     if (count <= req.length) {
       for (var i = count; i < req.length; i++) {
-        var temperature = new Temperature(extend(tempObj, req[i]));
-        temperature.save(function(err) {
+        var din1 = new Din1(extend(tempObj, req[i]));
+        din1.save(function(err) {
           if(err) {
             console.log(err);
           } else {
-            // console.log("Successfully created");
-            Temperature.update({}, {teamID: team}, {multi: true}, function(err) {
-              if (err)
-              console.log('OK Naka ' + 'temp')
-            })
+            console.log('OK Naka din')
           }
         });
       }
@@ -79,4 +74,4 @@ function extend(target) {
   return target;
 }
 
-module.exports = temperatureController;
+module.exports = din1Controller;
