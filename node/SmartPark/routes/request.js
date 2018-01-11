@@ -4,64 +4,8 @@ var request = require('request');
 var https = require('https');
 var rp = require('request-promise');
 var tempctrl = require('../controllers/TemperatureController')
-var pressctrl = require('../controllers/PressureController')
-var humidctrl = require('../controllers/HumidityController')
 var accelctrl = require('../controllers/AccelerometerController')
-var gyroctrl = require('../controllers/GyroscopeController')
-var magnetctrl = require('../controllers/MagnetometerController')
 var din1ctrl = require('../controllers/Din1Controller')
-
-var keyMapping = {
-    'pressure':['sensID','val','date'],
-    'temperature':['sensID','val','date'],
-    'humidity':['sensID','val','date'],
-    'gyroscope':['sensID','val_x','val_y','val_z','date'],
-    'accelerometer':['sensID','val_x','val_y','val_z','date'],
-    'magnetometer':['sensID','val_x','val_y','val_z','date'],
-    'leds':['sensID','val','date'],
-    'din':['sensID','val','date']
-};
-
-router.post('/postCoordinate', function(req, res, next) {
-    var data = {
-        TEAM_ID: req.body.TEAM_ID,
-        LAT: req.body.LAT,
-        LONG: req.body.LONG
-    }
-    console.log(data);
-    res.render('showpost', {data: data})
-});
-
-router.get('/dummy/:teamID', function(req, res, next) {
-  var teamID = req.params.teamID;
-  var sensors = ['posts','albums'];
-  
-  var myRequests = [];
-  for(var i=0;i<sensors.length;i++) {
-    myRequests.push(rp("https://jsonplaceholder.typicode.com/" + sensors[i]));
-  }
-
-  var allTable = [];
-  Promise.all(myRequests).then((results) => {
-    for(var i=0;i<results.length;i++) {
-      var newTable = {
-        sensor: sensors[i],
-        teamID: teamID,
-        keys: ['userId','id','title'],
-        data: JSON.parse(results[i])
-     };
-     allTable.push(newTable);
-    }
-    console.log(allTable.length);
-    res.render('request', {
-        result: allTable
-    });
-
-  }).catch(err => console.log("ERR: " +err));
-
-
-
-});
 
 router.get('/team/:teamID/:save', function(req, res, next) {
   var teamID = req.params.teamID;
@@ -99,10 +43,6 @@ router.get('/team/:teamID/:save', function(req, res, next) {
           switch(isensor){
             case 'temperature': tempctrl.save(resj.data, iteamID); break;
             case 'accelerometer': accelctrl.save(resj.data, iteamID); break;
-            case 'pressure': pressctrl.save(resj.data); break;
-            case 'humidity': humidctrl.save(resj.data); break;
-            case 'gyroscope': gyroctrl.save(resj.data); break;
-            case 'magnetometer': magnetctrl.save(resj.data); break;
             case 'din1': din1ctrl.save(resj.data, iteamID); break;
           }
         }
