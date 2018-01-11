@@ -40,7 +40,7 @@ temperatureController.filter = function(req, res) {
           data: temperature
        };
 
-      res.render("../views/sensors", {result: [newTable,newTable], gotten: true});
+      res.render("../views/sensors", {result: [newTable], gotten: true});
     }
   });
 };

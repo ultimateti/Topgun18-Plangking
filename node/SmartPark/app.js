@@ -9,14 +9,11 @@ mongoose.Promise = global.Promise;
 
 console.log('start');
 
-mongoose.connect('mongodb://128.199.158.8/sensor')
+mongoose.connect('mongodb://localhost/sensor')
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error('mongo err'+err));
 
 var index = require('./routes/index');
-var mcu = require('./routes/mcu');
-var about = require('./routes/about');
-var users = require('./routes/users');
 var request = require('./routes/request');
 var sensors = require('./routes/sensors');
 
@@ -37,9 +34,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/mcu', mcu);
-app.use('/about', about);
-app.use('/users', users);
 app.use('/request', request);
 app.use('/sensors', sensors);
 
