@@ -45,6 +45,17 @@ din1Controller.filter = function(req, res) {
   });
 };
 
+din1Controller.filterRange = function(start_time, end_time, callback) {
+  Din1.find({date: {$gte: start_time, $lte: end_time}}).exec(function (err, din1) {
+    if (err) {
+      console.log("Error:", err);
+    }
+    else {
+      callback(din1)
+    }
+  });
+}
+
 din1Controller.save = function(req, team) {
   var tempObj = {teamID: team}
   Din1.count({teamID: team}, function(err, count) {

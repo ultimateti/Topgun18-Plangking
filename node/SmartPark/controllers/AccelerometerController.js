@@ -48,6 +48,17 @@ accelerometerController.filter = function(req, res) {
   });
 };
 
+accelerometerController.filterRange = function(start_time, end_time, callback) {
+  Accelerometer.find({date: {$gte: start_time, $lte: end_time}}).exec(function (err, accelerometer) {
+    if (err) {
+      console.log("Error:", err);
+    }
+    else {
+      callback(accelerometer)
+    }
+  });
+}
+
 accelerometerController.save = function(req, team) {
   var tempObj = {teamID: team}
   Accelerometer.count({teamID: team}, function(err, count) {
