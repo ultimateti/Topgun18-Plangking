@@ -23,7 +23,7 @@ function formatResult(result) {
 	    	if(result[i].data[j].hasOwnProperty('date')) result[i].data[j].date = new Date(result[i].data[j].date);
 	    }
 	    if(result[i].data[0].hasOwnProperty('date')) result[i].data.sort((a, b) => a.date - b.date);
-	    $('#dataTable'+i).DataTable();
+	    
     }
 }
 
@@ -40,6 +40,7 @@ $( "#timeForm" ).submit(function(event) {
   		console.log(data.result);
   		for(var i=0;i<data.result.length;i++) {
   			updateLine(data.result[i].teamID,data.result[i]);
+  			updateTable(data.result[i].teamID,data.result[i]);
   		}
 		
 	});
@@ -58,6 +59,7 @@ $('.graphBtn').click(function(event) {
 function LetsDraw() {
 	for(var i=0;i<frontResult.length;i++) {
   		createLine(frontResult[i].teamID,frontResult[i]);
+  		table_data[frontResult[i].teamID] = $('#dataTable'+frontResult[i].teamID).DataTable();
   	}
   	$('.graph:not(:first)').collapse("hide");
 }
@@ -193,6 +195,29 @@ function updateLine(id,dispData) {
 	}
 
 	line_chart[id].update();
+      
+}
+
+function updateTable(id,dispData) {
+	var data = [];
+	console.log(table_data[id].rows);
+	table_data[id].clear();
+
+	for (var i=0;i<dispData.data.length;i++) {
+		data = [i];
+		for (var j=0;j<dispData.keys.length;j++) {
+
+			data.push(dispData.data[i][dispData.keys[j]]);
+		}
+		//console.log(data);
+		table_data[id].row.add(data);
+		
+	}
+	
+	
+	table_data[id].draw();
+
+	
       
 }
 
