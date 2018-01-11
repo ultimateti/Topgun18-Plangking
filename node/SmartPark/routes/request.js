@@ -73,7 +73,7 @@ router.get('/team/:teamID/:save', function(req, res, next) {
     teamIDs = [teamID];
 
   var myRequests = [];
-  for(var i = 0; i < teamID.length; i++) {
+  for(var i = 0; i < teamIDs.length; i++) {
     for(var j = 0; j < sensors.length; j++) {
       myRequests.push(rp("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/All"));
       console.log("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/All");
@@ -90,26 +90,26 @@ router.get('/team/:teamID/:save', function(req, res, next) {
       if(resj.statusCode=='00') {
         newTable = {
           sensor: isensor,
-          teamID: iteamID,
+          teamID: 'แปลงขิง the Origin',
           keys: (keyMapping.hasOwnProperty(isensor))? keyMapping[isensor]:['sensID','val','date'],
           data: resj.data
         };
         
         if (isSave == 'true') {
           switch(sensors[i]){
-            case 'temperature': tempctrl.save(data.data); break;
-            case 'accelerometer': accelctrl.save(data.data); break;
-            case 'pressure': pressctrl.save(data.data); break;
-            case 'humidity': humidctrl.save(data.data); break;
-            case 'gyroscope': gyroctrl.save(data.data); break;
-            case 'magnetometer': magnetctrl.save(data.data); break;
+            case 'temperature': tempctrl.save(resj.data); break;
+            case 'accelerometer': accelctrl.save(resj.data); break;
+            case 'pressure': pressctrl.save(resj.data); break;
+            case 'humidity': humidctrl.save(resj.data); break;
+            case 'gyroscope': gyroctrl.save(resj.data); break;
+            case 'magnetometer': magnetctrl.save(resj.data); break;
           }
         }
         
       } else {
         newTable = {
           sensor: isensor,
-          teamID: iteamID,
+          teamID: 'แปลงขิง the Origin',
           keys: ['statusCode','statusDesc'],
           data: resj
        };
@@ -118,11 +118,12 @@ router.get('/team/:teamID/:save', function(req, res, next) {
      allTable.push(newTable);
     }
     console.log(allTable.length);
-    res.render('request', {
-        result: allTable
-    });
+    res.render('index', { title: 'GET all sensors complete!', desc:''})
 
-  }).catch(err => console.log("ERR: " +err));
+  }).catch(function(err) {
+    console.log(err)
+    res.render('index', { title: 'GET all error!', desc: err })
+  });
   
 });
 

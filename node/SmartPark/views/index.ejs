@@ -12,6 +12,9 @@
   <main>
     <div class="jumbotron">
       <h1><%= title %></h1>
+      <% if(desc.length > 0) { %>
+        <p><%= desc %></p>
+      <% } %>
       <p>Welcome to templating using EJS</p>
     </div>
   </main>

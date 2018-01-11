@@ -47,18 +47,21 @@ pressureController.filter = function(req, res) {
 
 // // Save new employee
 pressureController.save = function(req) {
-  for (var i = 0; i < req.length; i++) {
-    var pressure = new Pressure(req[i]);
-
-    pressure.save(function(err) {
-      if(err) {
-        console.log(err);
-      } else {
-        console.log("Successfully created");
+  Pressure.count(function(err, count) {
+    if (count <= req.length) {
+      for (var i = count; i < req.length; i++) {
+        var pressure = new Pressure(req[i]);
+    
+        pressure.save(function(err) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully created");
+          }
+        });
       }
-    });
-  }
-  
+    }
+  })
 };
 
 

@@ -47,18 +47,21 @@ temperatureController.filter = function(req, res) {
 
 // // Save new employee
 temperatureController.save = function(req) {
-  for (var i = 0; i < req.length; i++) {
-    var temperature = new Temperature(req[i]);
-
-    temperature.save(function(err) {
-      if(err) {
-        console.log(err);
-      } else {
-        console.log("Successfully created");
+  Temperature.count(function(err, count) {
+    if (count <= req.length) {
+      for (var i = count; i < req.length; i++) {
+        var temperature = new Temperature(req[i]);
+    
+        temperature.save(function(err) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully created");
+          }
+        });
       }
-    });
-  }
-  
+    }
+  })
 };
 
 
