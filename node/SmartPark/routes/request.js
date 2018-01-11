@@ -9,6 +9,7 @@ var humidctrl = require('../controllers/HumidityController')
 var accelctrl = require('../controllers/AccelerometerController')
 var gyroctrl = require('../controllers/GyroscopeController')
 var magnetctrl = require('../controllers/MagnetometerController')
+var din1ctrl = require('../controllers/Din1Controller')
 
 var keyMapping = {
     'pressure':['sensID','val','date'],
@@ -65,16 +66,17 @@ router.get('/dummy/:teamID', function(req, res, next) {
 router.get('/team/:teamID/:save', function(req, res, next) {
   var teamID = req.params.teamID;
   var isSave = req.params.save;
-  var sensors = ['temperature', 'accelerometer', 'pressure', 'humidity', 'gyroscope', 'magnetometer']
+  var sensors = ['temperature', 'accelerometer','din1']
   var teamIDs = [];
   if(teamID=='All') 
-    teamIDs = [5,7,9];
+    teamIDs = ['25', '45'];
   else
     teamIDs = [teamID];
 
   var myRequests = [];
   for(var i = 0; i < teamIDs.length; i++) {
     for(var j = 0; j < sensors.length; j++) {
+      
       myRequests.push(rp("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/All"));
       console.log("http://10.0.0.10/api/" + sensors[j] + "/" + teamIDs[i] + "/All");
     }
@@ -85,37 +87,27 @@ router.get('/team/:teamID/:save', function(req, res, next) {
     for(var i = 0; i < results.length; i++) {
       var resj = JSON.parse(results[i]);
       var newTable;
-      var isensor = sensors[i%sensors.length];
-      var iteamID = teamIDs[Math.floor(i/teamIDs.length)];
+      var isensor = sensors[i % sensors.length];
+      var iteamID = teamIDs[Math.floor(i / 3)];
+     
+      console.log('lul' + isensor)
       if(resj.statusCode=='00') {
-        newTable = {
-          sensor: isensor,
-          teamID: 'แปลงขิง the Origin',
-          keys: (keyMapping.hasOwnProperty(isensor))? keyMapping[isensor]:['sensID','val','date'],
-          data: resj.data
-        };
+        console.log("uiui" + iteamID + 'ii ' + isSave)
         
         if (isSave == 'true') {
-          switch(sensors[i]){
-            case 'temperature': tempctrl.save(resj.data); break;
-            case 'accelerometer': accelctrl.save(resj.data); break;
+          switch(isensor){
+            case 'temperature': tempctrl.save(resj.data, iteamID); break;
+            case 'accelerometer': accelctrl.save(resj.data, iteamID); break;
             case 'pressure': pressctrl.save(resj.data); break;
             case 'humidity': humidctrl.save(resj.data); break;
             case 'gyroscope': gyroctrl.save(resj.data); break;
             case 'magnetometer': magnetctrl.save(resj.data); break;
+            case 'din1': din1ctrl.save(resj.data, iteamID); break;
           }
         }
         
-      } else {
-        newTable = {
-          sensor: isensor,
-          teamID: 'แปลงขิง the Origin',
-          keys: ['statusCode','statusDesc'],
-          data: resj
-       };
       }
-      
-     allTable.push(newTable);
+    
     }
     console.log(allTable.length);
     res.render('index', { title: 'GET all sensors complete!', desc:''})
