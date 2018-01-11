@@ -7,6 +7,38 @@ a {
   color: #00B7FF;
 }
 
+p:first-letter {
+  text-transform:capitalize;
+}
+
 .fullwidth {
 	width: 100%;
+}
+
+.cssHeaderRow {
+    background-color: #2A94D6;
+}
+.cssTableRow {
+    background-color: #F0F1F2;
+}
+.cssOddTableRow {
+    background-color: #F0F1F2;
+}
+.cssSelectedTableRow {
+    font-size: 20px;
+    font-weight:bold;
+}
+.cssHoverTableRow {
+    background: #ccc;
+}
+.cssHeaderCell {
+    color: #FFFFFF;
+    padding: 10px !important;
+    border: solid 1px #FFFFFF;
+}
+.cssTableCell {
+    border: solid 1px #FFFFFF;
+}
+.cssRowNumberCell {
+    text-align: center;
 }

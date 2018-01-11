@@ -52,11 +52,29 @@
 
       
       <% for(var i=0;i<result.length;i++) {%>
-        <%= result[i].sensor %> of Team <%= result[i].teamID %>
-        <div id="linex<%= i %>"></div>
-        <div id="liney<%= i %>"></div>
-        <div id="linez<%= i %>"></div>
-        <div id="table<%= i %>"></div>
+        
+
+        <div class="panel panel-default panel-table">
+          <div class="panel-heading">
+            <div class="row">
+              <% if(result[i]!=null && result[i].hasOwnProperty('keys')) {  %>
+                  <p class="panel-title"><%= result[i].sensor %> of Team <%= result[i].teamID %></p>
+              <% } else { %>
+                   <h3 class="panel-title">Error Showing Data</h3>
+                <% } %>
+            </div>
+            <button type="button" class="btn btn-info fullwidth graphBtn" >Open Graph</button>
+            <div class="row graph collapse in">
+              <div id="linex<%= i %>"></div>
+              <div id="liney<%= i %>"></div>
+              <div id="linez<%= i %>"></div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div id="table<%= i %>"></div>
+            </div>
+          </div>
         <br><br>
       <% } %>
    
