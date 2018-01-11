@@ -21,6 +21,7 @@ function formatResult(frontResult) {
 	    	if(frontResult[i].data[i].hasOwnProperty('val_z')) frontResult[i].data[j].val_z = parseFloat(frontResult[i].data[j].val_z);
 	    	if(frontResult[i].data[i].hasOwnProperty('date')) frontResult[i].data[j].date = new Date(frontResult[i].data[j].date);
 	    }
+	    frontResult[i].sort((a, b) => a.date - b.date);
     }
 }
 
