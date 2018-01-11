@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Accelerometer = require("../models/Accelerometer");
-
+var teamName = require('./TeamName');
 var accelerometerController = {};
 
 // Show list of employees
@@ -10,18 +10,12 @@ accelerometerController.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'accelerometer',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val_x', 'val_y', 'val_z', 'date'],
-          data: accelerometer
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: false});
+      res.render("../views/sensors", {result: splitTeam(accelerometer)});
     }
   });
 };
+
+
 
 accelerometerController.filter = function(req, res) {
   var times = req.daytime;
@@ -35,15 +29,7 @@ accelerometerController.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'accelerometer',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val_x', 'val_y', 'val_z', 'date'],
-          data: accelerometer
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: true});
+      res.render("../views/sensors", {result: splitTeam(accelerometer)});
     }
   });
 };
@@ -86,6 +72,27 @@ function extend(target) {
       }
   });
   return target;
+}
+
+function splitTeam(teamArray) {
+  var allTable = [];
+  var lastTeam = 0;
+  teamArray.sort((a, b) => a.teamID - b.teamID);
+  for(var i=0;i<teamArray.length;i++) {
+    if(teamArray[i].teamID != lastTeam) {
+      
+        allTable.push({
+          sensor: teamArray[i].sensor,
+          teamID: teamName[teamArray[i].teamID],
+          keys: ['sensID','val_x','val_y','val_z','date'],
+          data: [teamArray[i]]
+       });
+    } else {
+        allTable[allTable.length-1].data.push(teamArray[i]);
+    }
+    lastTeam = teamArray[i].teamID;
+  }
+  return allTable;
 }
 
 module.exports = accelerometerController;

@@ -18,7 +18,6 @@
         <div class="col-md-12">
           <div >
             <form id='timeForm' action = "" method = "GET">
-                <input type="hidden" name="sensor" value=<%= result[0].sensor %>>
                 Date and Time : 
                   <input type="datetime-local" id="daytime">
                   
@@ -31,7 +30,6 @@
           
       
 
-      
       <% for(var i=0;i<result.length;i++) {%>
         
 
@@ -51,16 +49,16 @@
           </div>
 
           <div class="panel-body">
-            <% for(var i=0;i<result.length;i++) {%>
               <% var tableData = result[i]; %>
+              <% var index = i; %>
               <% include sensortable.ejs %>
               <br><br>
-            <% } %>
           </div>
         <br><br>
+        </div>
       <% } %>
    
-    </div>
+    
   </main>
   <footer>
     <% include footer.ejs %>

@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Temperature = require("../models/Temperature");
-
+var teamName = require('./TeamName');
 var temperatureController = {};
 
 // Show list of employees
@@ -10,27 +10,8 @@ temperatureController.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-      var allTable = [];
-      var lastTeam = 0;
-      temperature.sort((a, b) => parseInt(a.teamID) > parseInt(b.teamID));
-      for(var i=0;i<temperature.length;i++) {
-        if(temperature[i].teamID != lastTeam) {
-          console.log(temperature[i].teamID + ' x ' + lastTeam);
-            allTable.push({
-              sensor: 'temperature',
-              teamID: 'แปลงขิง the Origin',
-              keys: ['sensID','val','date'],
-              data: [temperature[i]]
-           });
-        } else {
-            console.log(temperature[i].teamID + ' / ' + lastTeam);
-            allTable[allTable.length-1].data.push(temperature[i]);
-        }
-        lastTeam = temperature[i].teamID;
-      }
-      console.log(allTable.length);
-
-      res.render("../views/sensors", {result: allTable, gotten: false});
+      console.log(temperature.length);
+      res.render("../views/sensors", {result: splitTeam(temperature)});
     }
   });
 };
@@ -44,15 +25,7 @@ temperatureController.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'temperature',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val','date'],
-          data: temperature
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: true});
+      res.render("../views/sensors", {result: splitTeam(temperature)});
     }
   });
 };
@@ -96,6 +69,27 @@ function extend(target) {
       }
   });
   return target;
+}
+
+function splitTeam(teamArray) {
+  var allTable = [];
+  var lastTeam = 0;
+  teamArray.sort((a, b) => a.teamID - b.teamID);
+  for(var i=0;i<teamArray.length;i++) {
+    if(teamArray[i].teamID != lastTeam) {
+      
+        allTable.push({
+          sensor: teamArray[i].sensor,
+          teamID: teamName[teamArray[i].teamID],
+          keys: ['sensID','val','date'],
+          data: [teamArray[i]]
+       });
+    } else {
+        allTable[allTable.length-1].data.push(teamArray[i]);
+    }
+    lastTeam = teamArray[i].teamID;
+  }
+  return allTable;
 }
 
 module.exports = temperatureController;

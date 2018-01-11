@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Din1 = require("../models/Din1");
-
+var teamName = require('./TeamName');
 var din1Controller = {};
 
 // Show list of employees
@@ -10,15 +10,7 @@ din1Controller.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'din1',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val','date'],
-          data: din1
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: false});
+      res.render("../views/sensors", {result: splitTeam(din1)});
     }
   });
 };
@@ -32,15 +24,7 @@ din1Controller.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'din1',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val','date'],
-          data: din1
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: true});
+        res.render("../views/sensors", {result: splitTeam(din1)});
     }
   });
 };
@@ -83,6 +67,26 @@ function extend(target) {
       }
   });
   return target;
+}
+
+function splitTeam(teamArray) {
+  var allTable = [];
+  var lastTeam = 0;
+  teamArray.sort((a, b) => a.teamID - b.teamID);
+  for(var i=0;i<teamArray.length;i++) {
+    if(teamArray[i].teamID != lastTeam) {
+        allTable.push({
+          sensor: teamArray[i].sensor,
+          teamID: teamName[teamArray[i].teamID],
+          keys: ['sensID','val','date'],
+          data: [teamArray[i]]
+       });
+    } else {
+        allTable[allTable.length-1].data.push(teamArray[i]);
+    }
+    lastTeam = teamArray[i].teamID;
+  }
+  return allTable;
 }
 
 module.exports = din1Controller;

@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Magnetometer = require("../models/Magnetometer");
-
+var teamName = require('./TeamName');
 var magnetometerController = {};
 
 // Show list of employees
@@ -10,15 +10,7 @@ magnetometerController.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'gyroscope',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val_x', 'val_y', 'val_z', 'date'],
-          data: magnetometer
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: false});
+      res.render("../views/sensors", {result: splitTeam(magnetometer)});
     }
   });
 };
@@ -32,15 +24,7 @@ magnetometerController.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'gyroscope',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val_x', 'val_y', 'val_z', 'date'],
-          data: magnetometer
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: true});
+      res.render("../views/sensors", {result: splitTeam(magnetometer)});
     }
   });
 };
@@ -64,5 +48,26 @@ magnetometerController.save = function(req) {
   })
 };
 
+
+function splitTeam(teamArray) {
+  var allTable = [];
+  var lastTeam = 0;
+  teamArray.sort((a, b) => a.teamID - b.teamID);
+  for(var i=0;i<teamArray.length;i++) {
+    if(teamArray[i].teamID != lastTeam) {
+      
+        allTable.push({
+          sensor: teamArray[i].sensor,
+          teamID: teamName[teamArray[i].teamID],
+          keys: ['sensID','val_x','val_y','val_z','date'],
+          data: [teamArray[i]]
+       });
+    } else {
+        allTable[allTable.length-1].data.push(teamArray[i]);
+    }
+    lastTeam = teamArray[i].teamID;
+  }
+  return allTable;
+}
 
 module.exports = magnetometerController;

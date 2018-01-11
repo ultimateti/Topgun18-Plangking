@@ -8,7 +8,6 @@ $( document ).ready(function() {
     console.log(frontResult);
 
     formatResult(frontResult);
-    $('#dataTable').DataTable();
     LetsDraw();
     
 });
@@ -18,12 +17,13 @@ function formatResult(frontResult) {
 	for(var i=0;i<frontResult.length;i++) {
 		for(var j=0;j<frontResult[i].data.length;j++) {
 	    	if(frontResult[i].data[j].hasOwnProperty('val')) frontResult[i].data[j].val = parseFloat(frontResult[i].data[j].val);
-	    	if(frontResult[i].data[i].hasOwnProperty('val_x')) frontResult[i].data[j].val_x = parseFloat(frontResult[i].data[j].val_x);
-	    	if(frontResult[i].data[i].hasOwnProperty('val_y')) frontResult[i].data[j].val_y = parseFloat(frontResult[i].data[j].val_y);
-	    	if(frontResult[i].data[i].hasOwnProperty('val_z')) frontResult[i].data[j].val_z = parseFloat(frontResult[i].data[j].val_z);
-	    	if(frontResult[i].data[i].hasOwnProperty('date')) frontResult[i].data[j].date = new Date(frontResult[i].data[j].date);
+	    	if(frontResult[i].data[j].hasOwnProperty('val_x')) frontResult[i].data[j].val_x = parseFloat(frontResult[i].data[j].val_x);
+	    	if(frontResult[i].data[j].hasOwnProperty('val_y')) frontResult[i].data[j].val_y = parseFloat(frontResult[i].data[j].val_y);
+	    	if(frontResult[i].data[j].hasOwnProperty('val_z')) frontResult[i].data[j].val_z = parseFloat(frontResult[i].data[j].val_z);
+	    	if(frontResult[i].data[j].hasOwnProperty('date')) frontResult[i].data[j].date = new Date(frontResult[i].data[j].date);
 	    }
-	    if(frontResult[i].data[i].hasOwnProperty('date')) frontResult[i].data.sort((a, b) => a.date - b.date);
+	    if(frontResult[i].data[0].hasOwnProperty('date')) frontResult[i].data.sort((a, b) => a.date - b.date);
+	    $('#dataTable'+i).DataTable();
     }
 }
 
@@ -117,7 +117,7 @@ function createLine(id,dispData) {
 		}
 		
 		config.data.datasets.push({
-			label: dispData.sensor,
+			label: dispData.data[0].sensor,
 			backgroundColor: '#FF0000',
 			data: data,
 			type: 'line',
@@ -135,7 +135,7 @@ function createLine(id,dispData) {
 			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_x)});
 		}
 		config.data.datasets.push({
-			label: dispData.sensor + '(x)',
+			label: '(x)',
 			backgroundColor: '#FF0000',
 			data: data,
 			type: 'line',
@@ -152,7 +152,7 @@ function createLine(id,dispData) {
 		}
 		
 		config.data.datasets.push({
-			label: dispData.sensor + '(y)',
+			label: '(y)',
 			backgroundColor: '#FFFF00',
 			data: data,
 			type: 'line',
@@ -168,7 +168,7 @@ function createLine(id,dispData) {
 			data.push({x:new Date(dispData.data[i].date),y:parseFloat(dispData.data[i].val_z)});
 		}
 		config.data.datasets.push({
-			label: dispData.sensor + '(z)',
+			label: '(z)',
 			backgroundColor: '#00FF00',
 			data: data,
 			type: 'line',

@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Gyroscope = require("../models/Gyroscope");
-
+var teamName = require('./TeamName');
 var gyroscopeController = {};
 
 // Show list of employees
@@ -10,15 +10,7 @@ gyroscopeController.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'gyroscope',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val_x', 'val_y', 'val_z', 'date'],
-          data: gyroscope
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: false});
+      res.render("../views/sensors", {result: splitTeam(gyroscope)});
     }
   });
 };
@@ -32,15 +24,7 @@ gyroscopeController.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'gyroscope',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val_x', 'val_y', 'val_z', 'date'],
-          data: gyroscope
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: true});
+      res.render("../views/sensors", {result: splitTeam(gyroscope)});
     }
   });
 };
@@ -64,5 +48,26 @@ gyroscopeController.save = function(req) {
   })
 };
 
+
+function splitTeam(teamArray) {
+  var allTable = [];
+  var lastTeam = 0;
+  teamArray.sort((a, b) => a.teamID - b.teamID);
+  for(var i=0;i<teamArray.length;i++) {
+    if(teamArray[i].teamID != lastTeam) {
+      
+        allTable.push({
+          sensor: teamArray[i].sensor,
+          teamID: teamName[teamArray[i].teamID],
+          keys: ['sensID','val_x','val_y','val_z','date'],
+          data: [teamArray[i]]
+       });
+    } else {
+        allTable[allTable.length-1].data.push(teamArray[i]);
+    }
+    lastTeam = teamArray[i].teamID;
+  }
+  return allTable;
+}
 
 module.exports = gyroscopeController;

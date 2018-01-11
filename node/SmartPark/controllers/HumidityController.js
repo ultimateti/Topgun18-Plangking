@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Humidity = require("../models/Humidity");
-
+var teamName = require('./TeamName');
 var humidityController = {};
 
 // Show list of employees
@@ -10,15 +10,7 @@ humidityController.list = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'humidity',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val','date'],
-          data: humidity
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: false});
+      res.render("../views/sensors", {result: splitTeam(humidity)});
     }
   });
 };
@@ -32,15 +24,7 @@ humidityController.filter = function(req, res) {
       console.log("Error:", err);
     }
     else {
-
-      var newTable = {
-          sensor: 'humidity',
-          teamID: 'แปลงขิง the Origin',
-          keys: ['sensID','val','date'],
-          data: humidity
-       };
-
-      res.render("../views/sensors", {result: [newTable], gotten: true});
+      res.render("../views/sensors", {result: splitTeam(humidity)});
     }
   });
 };
@@ -64,5 +48,25 @@ humidityController.save = function(req) {
   })
 };
 
+function splitTeam(teamArray) {
+  var allTable = [];
+  var lastTeam = 0;
+  teamArray.sort((a, b) => a.teamID - b.teamID);
+  for(var i=0;i<teamArray.length;i++) {
+    if(teamArray[i].teamID != lastTeam) {
+      
+        allTable.push({
+          sensor: teamArray[i].sensor,
+          teamID: teamName[teamArray[i].teamID],
+          keys: ['sensID','val','date'],
+          data: [teamArray[i]]
+       });
+    } else {
+        allTable[allTable.length-1].data.push(teamArray[i]);
+    }
+    lastTeam = teamArray[i].teamID;
+  }
+  return allTable;
+}
 
 module.exports = humidityController;
