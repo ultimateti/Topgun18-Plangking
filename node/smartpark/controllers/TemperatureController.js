@@ -1,11 +1,11 @@
 var mongoose = require("mongoose");
-var temperature = require("../models/temperature");
+var Temperature = require("../models/Temperature");
 
 var temperatureController = {};
 
 // Show list of employees
 temperatureController.list = function(req, res) {
-  temperature.find({}).exec(function (err, temperature) {
+  Temperature.find({}).exec(function (err, temperature) {
     if (err) {
       console.log("Error:", err);
     }
@@ -18,15 +18,16 @@ temperatureController.list = function(req, res) {
           data: temperature
        };
 
-      res.render("../views/sensors", {result: [newTable]});
+      res.render("../views/sensors", {result: [newTable], gotten: false});
     }
   });
 };
 
-// Time Filter
 temperatureController.filter = function(req, res) {
-  var time = req.daytime;
-  temperature.find({}).exec(function (err, temperature) {
+  var times = req.daytime;
+  var valtime = new Date(times).valueOf()
+  var startTime = new Date(valtime - 30 * 60000)
+  Temperature.find({date: {$gte: startTime, $lte: times}}).exec(function (err, temperature) {
     if (err) {
       console.log("Error:", err);
     }
@@ -39,23 +40,28 @@ temperatureController.filter = function(req, res) {
           data: temperature
        };
 
-      res.render("../views/sensors", {result: [newTable]});
+      res.render("../views/sensors", {result: [newTable], gotten: true});
     }
   });
 };
 
-
-// Save new employee
-temperatureController.save = function(req, res) {
-  var temperature = new Temperature(req.body);
-
-  temperature.save(function(err) {
-    if(err) {
-      console.log(err);
-    } else {
-      console.log("Successfully created");
+// // Save new employee
+temperatureController.save = function(req) {
+  Temperature.count(function(err, count) {
+    if (count <= req.length) {
+      for (var i = count; i < req.length; i++) {
+        var temperature = new Temperature(req[i]);
+    
+        temperature.save(function(err) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully created");
+          }
+        });
+      }
     }
-  });
+  })
 };
 
 

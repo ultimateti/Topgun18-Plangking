@@ -26,7 +26,6 @@ router.post('/save', function(req, res) {
 
 router.get('/sensor_get', function (req, res) {
 	var sensor = req.query.sensor;
-	console.log('hi');
 	console.log(req.query);
 	switch(sensor) {
 	    case 'pressure':
@@ -97,7 +96,6 @@ router.get('/list/:sensor', function(req, res) {
 			    }
 			    console.log(allTable.length);
 			    res.render("../views/sensors", {result: [newTable],sensorName: sensor});
-
 			  }).catch(err => console.log("ERR: " +err));
 	        break;
 	    default:
@@ -106,5 +104,7 @@ router.get('/list/:sensor', function(req, res) {
 	}
 
 });
+
+
 
 module.exports = router;

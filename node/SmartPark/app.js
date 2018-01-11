@@ -7,11 +7,16 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://localhost/sensor')
+console.log('start');
+
+mongoose.connect('mongodb://128.168.43.189/sensor')
   .then(() =>  console.log('connection succesful'))
-  .catch((err) => console.error(err));
+  .catch((err) => console.error('mongo err'+err));
 
 var index = require('./routes/index');
+var mcu = require('./routes/mcu');
+var about = require('./routes/about');
+var users = require('./routes/users');
 var request = require('./routes/request');
 var sensors = require('./routes/sensors');
 
@@ -25,11 +30,16 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/mcu', mcu);
+app.use('/about', about);
+app.use('/users', users);
 app.use('/request', request);
 app.use('/sensors', sensors);
 
@@ -49,5 +59,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// setInterval(function(){request(1)}, 5000);
 
 module.exports = app;
