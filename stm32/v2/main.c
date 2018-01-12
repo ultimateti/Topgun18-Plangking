@@ -163,8 +163,7 @@ extern __IO uint8_t SENSOR_DETECTED;
 float Pressure_Value;
 float Temperature_Value;
 float Humidity_Value;
-uint8_t digitalInput1_Value =0 ;
-uint8_t	sensor	= 0;																			
+uint8_t digitalInput1_Value =0 ;																	
 																		
 extern void Check_Sensor_Detect(void);
 extern void *ACCELERO_handle;

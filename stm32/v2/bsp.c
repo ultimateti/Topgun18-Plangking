@@ -159,7 +159,7 @@ void  BSP_sensor_Init( void  )
   BSP_MAGNETO_Sensor_Enable( MAGNETO_handle );
 	
 	BSP_ACCELERO_Enable_Single_Tap_Detection_Ext(ACCELERO_handle);		// Tap enable Modify 4/1/2018
-	BSP_ACCELERO_Set_Tap_Threshold_Ext(ACCELERO_handle, 3);						// Tap TSH Modify 4/1/2018 //5 bit
+	BSP_ACCELERO_Set_Tap_Threshold_Ext(ACCELERO_handle, 2);						// Tap TSH Modify 4/1/2018 //5 bit
 	//BSP_ACCELERO_Set_Interrupt_Latch_Ext(ACCELERO_handle,ENABLE);			// Tap Interrupt enable 4/1/2018
 	//BSP_ACCELERO_Set_Tap_Duration_Time_Ext(ACCELERO_handle, (uint8_t) 0x1B);
 	
