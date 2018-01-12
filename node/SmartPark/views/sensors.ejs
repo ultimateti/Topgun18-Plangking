@@ -6,22 +6,21 @@
   
 </head>
 
-<body>
+<body style="display: none;">
   <header>
     <% include header.ejs %>
   </header>
   <main>
     
     
-    <div class="container">
+    <div class="container well">
       <div class="row">
         <div class="col-md-12">
           <div >
             <form id='timeForm' action = "" method = "GET">
-                <input type="hidden" name="sensor" value=<%= result[0].sensor %>>
                 Date and Time : 
-                  <input type="datetime-local" id="daytime">
-                  
+                  <input type="datetime-local" id="starttime">
+                  <input type="datetime-local" id="stoptime">
                   <input type = "submit" value = "Submit" id="daytime_submit">
             </form>
           </div>
@@ -31,7 +30,6 @@
           
       
 
-      
       <% for(var i=0;i<result.length;i++) {%>
         
 
@@ -39,28 +37,28 @@
           <div class="panel-heading">
             <div class="row">
               <% if(result[i]!=null && result[i].hasOwnProperty('keys')) {  %>
-                  <p class="panel-title"><%= result[i].sensor %> of Team <%= result[i].teamID %></p>
+                  <p class="panel-title"><%= result[i].sensor %> of Team <%= result[i].teamName %> (<%= result[i].teamID %>)</p>
               <% } else { %>
                    <h3 class="panel-title">Error Showing Data</h3>
                 <% } %>
             </div>
             <button type="button" class="btn btn-info fullwidth graphBtn" >Open Graph</button>
             <div class="row graph collapse in">
-              <canvas id="line<%= i %>" class="line"></canvas>
+              <canvas id="line<%= result[i].teamID %>" class="line"></canvas>
             </div>
           </div>
 
           <div class="panel-body">
-            <% for(var i=0;i<result.length;i++) {%>
               <% var tableData = result[i]; %>
+              <% var index = result[i].teamID; %>
               <% include sensortable.ejs %>
               <br><br>
-            <% } %>
           </div>
         <br><br>
+        </div>
       <% } %>
    
-    </div>
+    
   </main>
   <footer>
     <% include footer.ejs %>

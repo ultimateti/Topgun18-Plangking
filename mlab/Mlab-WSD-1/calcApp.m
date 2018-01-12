@@ -52,14 +52,14 @@ function calcApp_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to calcApp (see VARARGIN)
 
-% Choose default command line output for calcApp
-handles.output = hObject;
-handles.stateButton = 0;
-T = timer; % make timer
-T.period = 0.001; % period = 0.1
-T.ExecutionMode = 'fixedRate';
-T.TimerFcn = @Update_Fcn; % this function executed
-handles.timer = T; % make then to handle
+    % Choose default command line output for calcApp
+    handles.output = hObject;
+    handles.stateButton = 0;
+    T = timer; % make timer
+    T.period = 0.001; % period = 0.1
+    T.ExecutionMode = 'fixedRate';
+    T.TimerFcn = @Update_Fcn; % this function executed
+    handles.timer = T; % make then to handle
 
 
 % Update handles structure

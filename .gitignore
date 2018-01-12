@@ -60,7 +60,8 @@ typings/
 # next.js build output
 .next
 
-# vscode settings
+# vs code file
 .vscode/
-node/SmartPark/sftp-config.json
-node/SmartPark/sftp-config.json
+
+# matlab
+*.csv
