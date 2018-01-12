@@ -1,20 +1,16 @@
-function output  = GetData
-       
-    data = load('dataAll.mat');
-        temperature = data.data.temperature;
-        accelerometer = data.data.accelerometer;
-        din1 = data.data.din1;
-    %{
-        url = 'http://10.0.0.53:3000/api/allTeamSensor/0000/2359';
-        options = weboptions('Timeout',20);
+function output  = StreamData
+        url = 'http://10.0.0.53:3000/api/streamdata';
+        options = weboptions('Timeout',30);
         dataGet = webread(url,options);
-        disp('to lb a')
+        disp('get data')
+        data = dataGet;
+           
+        temperature = data.temperature;
+        accelerometer = data.accelerometer;
+        din1 = data.din1;
         
-     %}
-        temperature = data.data.temperature;
-        accelerometer = data.data.accelerometer;
-        din1 = data.data.din1;
-    disp('to lb 2')
+        
+
     temperature = struct2table(temperature);
     accelerometer = struct2table(accelerometer);
     din1 = struct2table(din1);
@@ -48,7 +44,10 @@ function output  = GetData
     
     from = (height(temperature))- dataLength+1;
     to = height(temperature)-1;
-    disp('to lb 3')
+    
     output = struct('temperature',temperature,'accelerometer',accelerometer,'din1',din1);
+
+    
+    
     
 end
