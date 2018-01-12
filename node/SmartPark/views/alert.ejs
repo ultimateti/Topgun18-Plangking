@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include head.ejs %>
+  
+</head>
+
+<body>
+  <header>
+    <% include header.ejs %>
+  </header>
+  <main>
+    
+    <div class="jumbotron">
+      <h3>Alert log</h3>
+      <table class="table table-striped table-bordered table-list">
+        <thead>
+            <tr>
+              <th>Seq</th>
+              <th>Team</th>
+              <th>Description</th>
+              <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0;i<result.length;i++) {%>
+            <tr>
+              <td><%= i+1 %></td>
+              <td><%= result[i].teamID %></td>
+              <td><%= result[i].description %></td>
+              <td><%= result[i].date %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <footer>
+    <% include footer.ejs %>
+  </footer>
+  <script>var frontResult = <%- JSON.stringify(result) %>; </script>
+  <script src="/js/Chart.bundle.min.js"></script>
+  <script src="/js/alertscript.js"></script>
+</body>
+
+</html>

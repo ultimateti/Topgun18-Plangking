@@ -1,0 +1,29 @@
+    <table class="table table-striped table-bordered table-list" id="dataTable<%= index %>">
+      <thead>
+        <tr>
+            <th>Seq</th>
+            <% for(var i=0; i < tableData.keys.length; i++) { %>
+              <th>
+                <%= tableData.keys[i] %>
+              </th>
+            <% } %>
+        </tr> 
+      </thead>
+      <tbody>
+          <% for(var i=0; i < tableData.data.length; i++) { %>
+            <tr>
+              <td>
+                <%= i+1 %>
+              </td>
+              <% for(var j=0; j < tableData.keys.length; j++) { %>
+                <td>
+                  <% if(tableData.keys[j] == 'val' || tableData.keys[j] == 'val_x' || tableData.keys[j] == 'val_y' || tableData.keys[j] == 'val_z') { %>
+                    <% tableData.data[i][tableData.keys[j]] = Math.round(tableData.data[i][tableData.keys[j]]*100)/100 %>
+                  <% } %>
+                  <%= tableData.data[i][tableData.keys[j]] %>
+                </td>
+              <% } %>
+            </tr>
+          <% } %>
+      </tbody>
+    </table>

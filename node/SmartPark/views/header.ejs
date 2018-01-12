@@ -1,0 +1,63 @@
+<header role="banner" class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container">
+    <div class="navbar-header">
+      <button data-toggle="collapse-side" data-target=".side-collapse" data-target-2=".side-collapse-container" type="button" class="navbar-toggle pull-left"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+    </div>
+    <div class="navbar-inverse side-collapse in">
+      <a class="navbar-brand" href="/">
+            <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
+            แปลงขิง the origin
+      </a>
+      <nav role="navigation" class="navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/sensors/list/accelerometer">Accelerometer</a></li>
+          <li><a href="/sensors/list/temperature">Temperature</a></li>
+          <li><a href="/sensors/list/din1">Din 1</a></li>
+          <li><a href="/alert">Alert Log</a></li>
+          <li><a href="/request/team/All/true">Get data from API</a></li>
+        </ul>
+        <img src="/image/banner.png" style="position: fixed;  z-index: 9999;  height:10%; right: 0px; top: 0px;">
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+$(document).ready(function() {   
+    var sideslider = $('[data-toggle=collapse-side]');
+    var sel = sideslider.attr('data-target');
+    var sel2 = sideslider.attr('data-target-2');
+    sideslider.click(function(event){
+        $(sel).toggleClass('in');
+        $(sel2).toggleClass('out');
+    });
+});
+</script>
+
+<style type="text/css">
+  @media screen and (max-width: 768px) {
+    .side-collapse-container{
+        width:100%;
+        position:relative;
+        left:0;
+        transition:left .4s;
+    }
+    .side-collapse-container.out{
+        left:200px;
+    }
+    .side-collapse {
+        top:50px;
+        bottom:0;
+        left:0;
+        width:200px;
+        position:fixed;
+        overflow:hidden;
+        transition:width .4s;
+    }
+    .side-collapse.in {
+        width:0;
+    }
+}
+  
+</style>

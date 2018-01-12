@@ -1,0 +1,19 @@
+<meta charset="UTF-8">
+<head>
+	<title>Test EJS</title>
+
+	<% include head.ejs %>
+
+</head>
+
+<body>
+	<%= title %>
+	<div class="jumbotron">
+			<p> Welcome </p>
+			<ul>
+			  <% users.forEach(function(user){ %>
+			    <%- user.name %> <br>
+			  <% }); %>
+			</ul>
+	</div>
+</body>
