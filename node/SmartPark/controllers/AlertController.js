@@ -1,16 +1,17 @@
 var mongoose = require("mongoose");
-var Alert = require("../models/Alert");
+var Alert = require("../models/Schema").Alert;
 
 var alertController = {};
 
 alertController.list = function(req, res) {
-  Alert.find({}).exec(function (err, alert) {
+  Alert.find({}).exec(function(err, alert) {
     if (err) {
       console.log("Error:", err);
-    }
-    else {
-      console.log(alert.length)
-      res.render('alert', {result: alert,title: 'Alert'})
+    } else {
+      res.render("alert", {
+        result: alert,
+        title: "Alert"
+      });
     }
   });
 };
@@ -18,11 +19,13 @@ alertController.list = function(req, res) {
 alertController.save = function(req, res) {
   var alert = new Alert(req.body);
   alert.save(function(err) {
-    if(err) {
+    if (err) {
       console.log(err);
     } else {
-      console.log('OK Naka alert')
-      res.send('OK Naka')
+      res.send({
+        statusCode: "200",
+        description: "OK"
+      });
     }
   });
 };
